@@ -1,0 +1,86 @@
+{
+  "siteUrl": "https://onefjefpod.com",
+  "feedUrl": "https://feeds.captivate.fm/onefjef/",
+  "showName": "onefjef",
+  "parenthetical": "(MEXICO CITY)",
+  "tagline": "Expat life in Mexico City",
+  "language": "en",
+  "timeZone": "America/Mexico_City",
+  "episodesPerPage": 10,
+  "homeEpisodeCount": 6,
+  "host": {
+    "name": "Jef Taylor",
+    "photo": "/img/host.webp",
+    "website": "https://onefjef.com"
+  },
+  "listen": [
+    {
+      "name": "Apple Podcasts",
+      "url": "https://podcasts.apple.com/us/podcast/onefjef/id1818270277"
+    },
+    {
+      "name": "Spotify",
+      "url": "https://open.spotify.com/show/2kJRynBFcxJTOkOhAzzgZD"
+    },
+    {
+      "name": "YouTube",
+      "url": "https://www.youtube.com/@onefjef"
+    },
+    {
+      "name": "RSS feed",
+      "url": "https://feeds.captivate.fm/onefjef/"
+    }
+  ],
+  "social": [
+    {
+      "name": "Instagram",
+      "url": "https://www.instagram.com/onefjefpod/"
+    },
+    {
+      "name": "TikTok",
+      "url": "https://www.tiktok.com/@onefjefpodcast"
+    },
+    {
+      "name": "YouTube",
+      "url": "https://www.youtube.com/@onefjef"
+    },
+    {
+      "name": "Substack",
+      "url": "https://onefjef.substack.com"
+    },
+    {
+      "name": "Facebook",
+      "url": "https://www.facebook.com/onefjefpod"
+    },
+    {
+      "name": "Patreon",
+      "url": "https://www.patreon.com/onefjef"
+    }
+  ],
+  "contact": {
+    "email": "onefjefpod@gmail.com",
+    "voicemail": "1-669-241-5882"
+  },
+  "support": {
+    "heading": "Get new episodes in your inbox",
+    "body": "Join the Patreon for free and you’ll get an email whenever a new episode comes out. Paid supporters get extra content, bonus episodes, and the quiet satisfaction of keeping an independent podcast going.",
+    "button": "Join on Patreon",
+    "url": "https://www.patreon.com/onefjef"
+  },
+  "redirects": {
+    "rssfeed": "https://feeds.captivate.fm/onefjef/",
+    "apple": "https://podcasts.apple.com/us/podcast/onefjef/id1818270277",
+    "spotify": "https://open.spotify.com/show/2kJRynBFcxJTOkOhAzzgZD"
+  },
+  "labels": {
+    "latest": "(LATEST)",
+    "episodes": "(EPISODES)",
+    "about": "(ABOUT)",
+    "listen": "(LISTEN)",
+    "notes": "(SHOW NOTES)",
+    "transcript": "(TRANSCRIPT)",
+    "watch": "(WATCH)"
+  },
+  "copyright": "Jef Taylor",
+  "copyrightStartYear": 2025
+}

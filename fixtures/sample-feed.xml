@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SAMPLE DATA for previewing the design offline (npm run sample).
+     Titles, dates and links are real; the show notes and transcripts are stand-ins.
+     The real build reads the live Captivate feed instead of this file. -->
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:podcast="https://podcastindex.org/namespace/1.0">
+<channel>
+  <title>onefjef</title>
+  <link>https://onefjefpod.com</link>
+  <description><![CDATA[<p>[Sample text. The live site shows your show description from Captivate here.]</p>]]></description>
+  <language>en</language>
+  <copyright>Copyright Jef Taylor</copyright>
+  <itunes:author>Jef Taylor</itunes:author>
+  <itunes:image href="https://artwork.captivate.fm/63e0da86-3538-47f6-bf1c-c86a57897a0c/SEASON-2-LOGO.jpg"/>
+  <item>
+    <title>Sex, Hugs &amp; Mexico City</title>
+    <link>https://onefjefpod.com/episode/ep-67</link>
+    <guid isPermaLink="false">497d5884-47d3-426f-9adb-39f9ca6beeed</guid>
+    <pubDate>Thu, 05 Nov 2026 10:00:00 -0600</pubDate>
+    <description><![CDATA[<p>[Sample show notes. The live site shows this episode's real notes from Captivate.]</p><p>Links keep working, like <a href="https://www.patreon.com/onefjef">Patreon</a>.</p>]]></description>
+    <enclosure url="https://dts.podtrac.com/redirect.mp3/op3.dev/e/episodes.captivate.fm/episode/497d5884-47d3-426f-9adb-39f9ca6beeed.mp3" length="0" type="audio/mpeg"/>
+    <itunes:duration>01:23:08</itunes:duration>
+    <itunes:episode>67</itunes:episode>
+    <itunes:episodeType>full</itunes:episodeType>
+    <podcast:transcript url="fixtures/sample-transcript.srt" type="application/x-subrip"/>
+  </item>
+  <item>
+    <title>A Barber, a Spider &amp; Pepe the Squirrel</title>
+    <link>https://onefjefpod.com/episode/a-barber-a-spider-pepe-the-squirrel</link>
+    <guid isPermaLink="false">b4975521-bf91-481f-a770-bd8bbb98dc21</guid>
+    <pubDate>Thu, 29 Oct 2026 10:00:00 -0600</pubDate>
+    <description><![CDATA[<p>[Sample show notes. The live site shows this episode's real notes from Captivate.]</p>]]></description>
+    <enclosure url="https://dts.podtrac.com/redirect.mp3/op3.dev/e/episodes.captivate.fm/episode/b4975521-bf91-481f-a770-bd8bbb98dc21.mp3" length="0" type="audio/mpeg"/>
+    <itunes:duration>1825</itunes:duration>
+    <itunes:episode>66</itunes:episode>
+    <podcast:transcript url="fixtures/sample-transcript.html" type="text/html"/>
+  </item>
+  <item>
+    <title>Six Months in Sayulita as the World Shut Down</title>
+    <link>https://onefjefpod.com/episode/six-months-in-sayulita-as-the-world-shut-down</link>
+    <guid isPermaLink="false">sample-65</guid>
+    <pubDate>Thu, 22 Oct 2026 10:00:00 -0600</pubDate>
+    <description><![CDATA[<p>[Sample show notes.]</p>]]></description>
+    <enclosure url="https://example.com/sample-65.mp3" length="0" type="audio/mpeg"/>
+    <itunes:episode>65</itunes:episode>
+  </item>
+  <item>
+    <title>From Hollywood to Mexico City</title>
+    <link>https://onefjefpod.com/episode/from-hollywood-to-mexico-city</link>
+    <guid isPermaLink="false">sample-64</guid>
+    <pubDate>Thu, 15 Oct 2026 10:00:00 -0600</pubDate>
+    <description><![CDATA[<p>[Sample show notes.]</p>]]></description>
+    <enclosure url="https://example.com/sample-64.mp3" length="0" type="audio/mpeg"/>
+    <itunes:episode>64</itunes:episode>
+  </item>
+  <item>
+    <title>Born American, Raised Mexican</title>
+    <link>https://onefjefpod.com/episode/born-american-raised-mexican</link>
+    <guid isPermaLink="false">sample-63</guid>
+    <pubDate>Thu, 08 Oct 2026 10:00:00 -0600</pubDate>
+    <description><![CDATA[<p>[Sample show notes.]</p>]]></description>
+    <enclosure url="https://example.com/sample-63.mp3" length="0" type="audio/mpeg"/>
+    <itunes:episode>63</itunes:episode>
+  </item>
+</channel>
+</rss>

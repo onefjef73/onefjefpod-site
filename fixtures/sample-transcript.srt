@@ -1,0 +1,239 @@
+1
+00:00:00,000 --> 00:00:04,000
+Jef: [Sample transcript line 1. The live site shows the real transcript from Captivate.]
+
+2
+00:00:04,000 --> 00:00:08,000
+[Sample transcript line 2. The live site shows the real transcript from Captivate.]
+
+3
+00:00:08,000 --> 00:00:12,000
+[Sample transcript line 3. The live site shows the real transcript from Captivate.]
+
+4
+00:00:12,000 --> 00:00:16,000
+[Sample transcript line 4. The live site shows the real transcript from Captivate.]
+
+5
+00:00:16,000 --> 00:00:20,000
+[Sample transcript line 5. The live site shows the real transcript from Captivate.]
+
+6
+00:00:20,000 --> 00:00:24,000
+[Sample transcript line 6. The live site shows the real transcript from Captivate.]
+
+7
+00:00:24,000 --> 00:00:28,000
+[Sample transcript line 7. The live site shows the real transcript from Captivate.]
+
+8
+00:00:28,000 --> 00:00:32,000
+[Sample transcript line 8. The live site shows the real transcript from Captivate.]
+
+9
+00:00:32,000 --> 00:00:36,000
+[Sample transcript line 9. The live site shows the real transcript from Captivate.]
+
+10
+00:00:36,000 --> 00:00:40,000
+[Sample transcript line 10. The live site shows the real transcript from Captivate.]
+
+11
+00:00:40,000 --> 00:00:44,000
+Guest: [Sample transcript line 11. The live site shows the real transcript from Captivate.]
+
+12
+00:00:44,000 --> 00:00:48,000
+[Sample transcript line 12. The live site shows the real transcript from Captivate.]
+
+13
+00:00:48,000 --> 00:00:52,000
+[Sample transcript line 13. The live site shows the real transcript from Captivate.]
+
+14
+00:00:52,000 --> 00:00:56,000
+[Sample transcript line 14. The live site shows the real transcript from Captivate.]
+
+15
+00:00:56,000 --> 00:01:00,000
+[Sample transcript line 15. The live site shows the real transcript from Captivate.]
+
+16
+00:01:00,000 --> 00:01:04,000
+[Sample transcript line 16. The live site shows the real transcript from Captivate.]
+
+17
+00:01:04,000 --> 00:01:08,000
+[Sample transcript line 17. The live site shows the real transcript from Captivate.]
+
+18
+00:01:08,000 --> 00:01:12,000
+[Sample transcript line 18. The live site shows the real transcript from Captivate.]
+
+19
+00:01:12,000 --> 00:01:16,000
+[Sample transcript line 19. The live site shows the real transcript from Captivate.]
+
+20
+00:01:16,000 --> 00:01:20,000
+[Sample transcript line 20. The live site shows the real transcript from Captivate.]
+
+21
+00:01:20,000 --> 00:01:24,000
+Jef: [Sample transcript line 21. The live site shows the real transcript from Captivate.]
+
+22
+00:01:24,000 --> 00:01:28,000
+[Sample transcript line 22. The live site shows the real transcript from Captivate.]
+
+23
+00:01:28,000 --> 00:01:32,000
+[Sample transcript line 23. The live site shows the real transcript from Captivate.]
+
+24
+00:01:32,000 --> 00:01:36,000
+[Sample transcript line 24. The live site shows the real transcript from Captivate.]
+
+25
+00:01:36,000 --> 00:01:40,000
+[Sample transcript line 25. The live site shows the real transcript from Captivate.]
+
+26
+00:01:40,000 --> 00:01:44,000
+[Sample transcript line 26. The live site shows the real transcript from Captivate.]
+
+27
+00:01:44,000 --> 00:01:48,000
+[Sample transcript line 27. The live site shows the real transcript from Captivate.]
+
+28
+00:01:48,000 --> 00:01:52,000
+[Sample transcript line 28. The live site shows the real transcript from Captivate.]
+
+29
+00:01:52,000 --> 00:01:56,000
+[Sample transcript line 29. The live site shows the real transcript from Captivate.]
+
+30
+00:01:56,000 --> 00:02:00,000
+[Sample transcript line 30. The live site shows the real transcript from Captivate.]
+
+31
+00:02:00,000 --> 00:02:04,000
+Guest: [Sample transcript line 31. The live site shows the real transcript from Captivate.]
+
+32
+00:02:04,000 --> 00:02:08,000
+[Sample transcript line 32. The live site shows the real transcript from Captivate.]
+
+33
+00:02:08,000 --> 00:02:12,000
+[Sample transcript line 33. The live site shows the real transcript from Captivate.]
+
+34
+00:02:12,000 --> 00:02:16,000
+[Sample transcript line 34. The live site shows the real transcript from Captivate.]
+
+35
+00:02:16,000 --> 00:02:20,000
+[Sample transcript line 35. The live site shows the real transcript from Captivate.]
+
+36
+00:02:20,000 --> 00:02:24,000
+[Sample transcript line 36. The live site shows the real transcript from Captivate.]
+
+37
+00:02:24,000 --> 00:02:28,000
+[Sample transcript line 37. The live site shows the real transcript from Captivate.]
+
+38
+00:02:28,000 --> 00:02:32,000
+[Sample transcript line 38. The live site shows the real transcript from Captivate.]
+
+39
+00:02:32,000 --> 00:02:36,000
+[Sample transcript line 39. The live site shows the real transcript from Captivate.]
+
+40
+00:02:36,000 --> 00:02:40,000
+[Sample transcript line 40. The live site shows the real transcript from Captivate.]
+
+41
+00:02:40,000 --> 00:02:44,000
+Jef: [Sample transcript line 41. The live site shows the real transcript from Captivate.]
+
+42
+00:02:44,000 --> 00:02:48,000
+[Sample transcript line 42. The live site shows the real transcript from Captivate.]
+
+43
+00:02:48,000 --> 00:02:52,000
+[Sample transcript line 43. The live site shows the real transcript from Captivate.]
+
+44
+00:02:52,000 --> 00:02:56,000
+[Sample transcript line 44. The live site shows the real transcript from Captivate.]
+
+45
+00:02:56,000 --> 00:03:00,000
+[Sample transcript line 45. The live site shows the real transcript from Captivate.]
+
+46
+00:03:00,000 --> 00:03:04,000
+[Sample transcript line 46. The live site shows the real transcript from Captivate.]
+
+47
+00:03:04,000 --> 00:03:08,000
+[Sample transcript line 47. The live site shows the real transcript from Captivate.]
+
+48
+00:03:08,000 --> 00:03:12,000
+[Sample transcript line 48. The live site shows the real transcript from Captivate.]
+
+49
+00:03:12,000 --> 00:03:16,000
+[Sample transcript line 49. The live site shows the real transcript from Captivate.]
+
+50
+00:03:16,000 --> 00:03:20,000
+[Sample transcript line 50. The live site shows the real transcript from Captivate.]
+
+51
+00:03:20,000 --> 00:03:24,000
+Guest: [Sample transcript line 51. The live site shows the real transcript from Captivate.]
+
+52
+00:03:24,000 --> 00:03:28,000
+[Sample transcript line 52. The live site shows the real transcript from Captivate.]
+
+53
+00:03:28,000 --> 00:03:32,000
+[Sample transcript line 53. The live site shows the real transcript from Captivate.]
+
+54
+00:03:32,000 --> 00:03:36,000
+[Sample transcript line 54. The live site shows the real transcript from Captivate.]
+
+55
+00:03:36,000 --> 00:03:40,000
+[Sample transcript line 55. The live site shows the real transcript from Captivate.]
+
+56
+00:03:40,000 --> 00:03:44,000
+[Sample transcript line 56. The live site shows the real transcript from Captivate.]
+
+57
+00:03:44,000 --> 00:03:48,000
+[Sample transcript line 57. The live site shows the real transcript from Captivate.]
+
+58
+00:03:48,000 --> 00:03:52,000
+[Sample transcript line 58. The live site shows the real transcript from Captivate.]
+
+59
+00:03:52,000 --> 00:03:56,000
+[Sample transcript line 59. The live site shows the real transcript from Captivate.]
+
+60
+00:03:56,000 --> 00:04:00,000
+[Sample transcript line 60. The live site shows the real transcript from Captivate.]

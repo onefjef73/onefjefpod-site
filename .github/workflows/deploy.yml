@@ -1,0 +1,68 @@
+# Rebuilds and publishes the site:
+#   - every hour (picks up new episodes from the Captivate feed)
+#   - whenever you change a file in this repository
+#   - whenever you press "Run workflow" on the Actions tab
+name: Build and publish site
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - id: pages
+        uses: actions/configure-pages@v5
+      - uses: actions/cache@v4
+        with:
+          path: .cache
+          key: transcripts-${{ github.run_id }}
+          restore-keys: transcripts-
+      - name: Build from the live feed
+        run: npm run build
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+      # Records the newest episode in the repository. Besides being a handy
+      # log, this regular commit keeps GitHub from switching off the hourly
+      # schedule, which it does to public repositories left untouched for 60 days.
+      - name: Record newest episode
+        run: |
+          if ! git diff --quiet -- data/latest.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/latest.json
+            git commit -m "New episode published"
+            git push
+          fi
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
