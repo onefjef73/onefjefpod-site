@@ -195,12 +195,12 @@ ${body}
     const body = `<section class="hero">
   <h1 class="hero-card">
     <span class="only-light">
-      <img class="hc-wide" src="${asset('/img/hero-wide-2400.webp')}" width="2400" height="870" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" fetchpriority="high">
-      <img class="hc-square" src="${asset('/img/hero-square-1600.webp')}" width="1600" height="840" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
+      <img class="hc-wide" src="${asset('/img/hero-wide-2400.webp')}" width="2400" height="792" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" fetchpriority="high">
+      <img class="hc-square" src="${asset('/img/hero-square-1600.webp')}" width="1600" height="779" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
     </span>
     <span class="only-dark">
-      <img class="hc-wide" src="${asset('/img/hero-wide-dark-2400.webp')}" width="2400" height="870" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
-      <img class="hc-square" src="${asset('/img/hero-square-dark-1600.webp')}" width="1600" height="840" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
+      <img class="hc-wide" src="${asset('/img/hero-wide-dark-2400.webp')}" width="2400" height="792" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
+      <img class="hc-square" src="${asset('/img/hero-square-dark-1600.webp')}" width="1600" height="779" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
     </span>
   </h1>
 </section>

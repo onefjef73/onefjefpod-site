@@ -16,7 +16,7 @@ from PIL import Image, ImageFilter
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'static/img')
 maps = {t: Image.open(os.path.join(ROOT, f'tools/map-{t}.png')).convert('RGB') for t in ('light', 'dark')}
-SCALE = float(sys.argv[3]) if len(sys.argv) > 3 else 0.67
+SCALE = float(sys.argv[3]) if len(sys.argv) > 3 else 0.57
 
 def cover(img, w, h):
     s = max(w / img.width, h / img.height)
