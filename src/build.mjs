@@ -15,6 +15,17 @@ const sample = process.argv.includes('--sample');
 const cfg = JSON.parse(await readFile(path.join(root, 'site.config.json'), 'utf8'));
 cfg.siteUrl = cfg.siteUrl.replace(/\/$/, '');
 cfg._version = Date.now().toString(36);
+// A short fingerprint of each image, stylesheet and script. It goes on the end of
+// the file's address, so when a file changes browsers fetch the new one at once
+// instead of showing a saved copy.
+cfg._fingerprints = {};
+{
+  const { createHash } = await import('node:crypto');
+  const { readdir } = await import('node:fs/promises');
+  const mark = async (urlPath, file) => { cfg._fingerprints[urlPath] = createHash('sha1').update(await readFile(file)).digest('hex').slice(0, 8); };
+  for (const f of await readdir(path.join(root, 'static/img'))) await mark(`/img/${f}`, path.join(root, 'static/img', f));
+  for (const f of ['styles.css', 'app.js', 'game.js']) await mark(`/${f}`, path.join(root, 'src', f));
+}
 // A link that is already a "listen" button or the Patreon button is not repeated among the social links.
 const listenUrls = new Set([...cfg.listen.map((l) => l.url), cfg.support?.url || ''].map((u) => u.replace(/\/$/, '')));
 cfg.socialAll = cfg.social;

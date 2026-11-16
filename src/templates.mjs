@@ -31,12 +31,13 @@ const clock = (sec) => {
 export function makeTemplates(cfg, base, show) {
   const L = cfg.labels;
   const url = (p) => `${base}${p}`;
+  const asset = (p) => `${base}${p}${cfg._fingerprints?.[p] ? `?v=${cfg._fingerprints[p]}` : ''}`;
   const abs = (p) => `${cfg.siteUrl}${p}`;
   const fmtDate = (d) => d ? new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: cfg.timeZone }).format(d) : '';
   const isoDate = (d) => d ? d.toISOString() : undefined;
   const epPath = (ep) => `/episode/${ep.slug}/`;
   // A photo path starting with / is a file in static/; anything else is a full web address.
-  const hostPhoto = cfg.host.photo?.startsWith('/') ? url(cfg.host.photo) : cfg.host.photo;
+  const hostPhoto = cfg.host.photo?.startsWith('/') ? asset(cfg.host.photo) : cfg.host.photo;
   const hostPhotoAbs = cfg.host.photo?.startsWith('/') ? abs(cfg.host.photo) : cfg.host.photo;
 
   const seriesLd = {
@@ -85,7 +86,7 @@ ${head}
 <link rel="manifest" href="${url('/site.webmanifest')}">
 <meta name="theme-color" content="#efefef">
 <script>(function(){var t='light';try{if(localStorage.getItem('theme')==='dark')t='dark'}catch(e){}document.documentElement.dataset.theme=t})()</script>
-<link rel="stylesheet" href="${url('/styles.css')}?v=${cfg._version}">
+<link rel="stylesheet" href="${asset('/styles.css')}">
 ${ld.length ? jsonLd(graph) : ''}
 </head>
 <body class="${pageClass}">
@@ -124,7 +125,7 @@ ${body}
   </div>
   <p class="foot-legal">© ${cfg.copyrightStartYear && cfg.copyrightStartYear < new Date().getFullYear() ? `${cfg.copyrightStartYear} - ` : ''}${new Date().getFullYear()} ${esc((cfg.copyright || show.copyright || cfg.host.name).replace(/^(copyright|©|\(c\))\s*(\d{4})?\s*/i, ''))}</p>
 </footer>
-<script src="${url('/app.js')}?v=${cfg._version}" defer></script>
+<script src="${asset('/app.js')}" defer></script>
 </body>
 </html>
 `;
@@ -194,12 +195,12 @@ ${body}
     const body = `<section class="hero">
   <h1 class="hero-card">
     <span class="only-light">
-      <img class="hc-wide" src="${url('/img/hero-wide-2400.webp')}" width="2400" height="870" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" fetchpriority="high">
-      <img class="hc-square" src="${url('/img/hero-square-1600.webp')}" width="1600" height="840" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
+      <img class="hc-wide" src="${asset('/img/hero-wide-2400.webp')}" width="2400" height="870" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" fetchpriority="high">
+      <img class="hc-square" src="${asset('/img/hero-square-1600.webp')}" width="1600" height="840" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
     </span>
     <span class="only-dark">
-      <img class="hc-wide" src="${url('/img/hero-wide-dark-2400.webp')}" width="2400" height="870" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
-      <img class="hc-square" src="${url('/img/hero-square-dark-1600.webp')}" width="1600" height="840" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
+      <img class="hc-wide" src="${asset('/img/hero-wide-dark-2400.webp')}" width="2400" height="870" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
+      <img class="hc-square" src="${asset('/img/hero-square-dark-1600.webp')}" width="1600" height="840" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
     </span>
   </h1>
 </section>
@@ -437,7 +438,7 @@ ${supportBand()}`;
     </div>
   </div>
 </section>
-<script src="${url('/game.js')}?v=${cfg._version}" defer></script>`;
+<script src="${asset('/game.js')}" defer></script>`;
     return layout({
       title: `One F, a small game | ${cfg.showName}`,
       description: `A small, pointless game from ${cfg.showName}. Catch one f. Only one.`,
