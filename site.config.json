@@ -82,5 +82,7 @@
     "watch": "(WATCH)"
   },
   "copyright": "Jef Taylor",
-  "copyrightStartYear": 2025
+  "copyrightStartYear": 2025,
+  "design": "a",
+  "defaultTheme": "light"
 }

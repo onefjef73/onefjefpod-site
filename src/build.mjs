@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { marked } from 'marked';
-import { loadFeed, cleanHtml } from './feed.mjs';
+import { loadFeed, cleanHtml, plainText } from './feed.mjs';
 import { getTranscript } from './transcript.mjs';
 import { makeTemplates } from './templates.mjs';
 import { makeThumb } from './thumbs.mjs';
@@ -15,6 +15,12 @@ const sample = process.argv.includes('--sample');
 const cfg = JSON.parse(await readFile(path.join(root, 'site.config.json'), 'utf8'));
 cfg.siteUrl = cfg.siteUrl.replace(/\/$/, '');
 cfg._version = Date.now().toString(36);
+// Which design to build: "a" (dark, with a sidebar) or "b" (light, with a grid).
+cfg.design = process.env.DESIGN || cfg.design || 'a';
+cfg.defaultTheme = process.env.DEFAULT_THEME || cfg.defaultTheme || (cfg.design === 'b' ? 'light' : 'dark');
+cfg.themeKey = process.env.THEME_KEY || 'theme';
+// Preview copies tell search engines to stay away.
+cfg.noindex = process.env.NOINDEX === '1';
 // A short fingerprint of each image, stylesheet and script. It goes on the end of
 // the file's address, so when a file changes browsers fetch the new one at once
 // instead of showing a saved copy.
@@ -24,7 +30,7 @@ cfg._fingerprints = {};
   const { readdir } = await import('node:fs/promises');
   const mark = async (urlPath, file) => { cfg._fingerprints[urlPath] = createHash('sha1').update(await readFile(file)).digest('hex').slice(0, 8); };
   for (const f of await readdir(path.join(root, 'static/img'))) await mark(`/img/${f}`, path.join(root, 'static/img', f));
-  for (const f of ['styles.css', 'app.js', 'game.js']) await mark(`/${f}`, path.join(root, 'src', f));
+  for (const f of ['styles.css', 'app.js', 'game.js', 'search.js']) await mark(`/${f}`, path.join(root, 'src', f));
 }
 // A link that is already a "listen" button or the Patreon button is not repeated among the social links.
 const listenUrls = new Set([...cfg.listen.map((l) => l.url), cfg.support?.url || ''].map((u) => u.replace(/\/$/, '')));
@@ -61,6 +67,7 @@ await cp(path.join(root, 'static'), dist, { recursive: true });
 await cp(path.join(root, 'src/styles.css'), path.join(dist, 'styles.css'));
 await cp(path.join(root, 'src/app.js'), path.join(dist, 'app.js'));
 await cp(path.join(root, 'src/game.js'), path.join(dist, 'game.js'));
+await cp(path.join(root, 'src/search.js'), path.join(dist, 'search.js'));
 
 // Episode artwork first, so every page that lists episodes can show it.
 {
@@ -70,16 +77,17 @@ await cp(path.join(root, 'src/game.js'), path.join(dist, 'game.js'));
 }
 
 const newest = episodes[0].date || new Date();
-await write('/', t.home(episodes, aboutShort), { lastmod: newest });
+await write('/', t.home(episodes), { lastmod: newest });
 await write('/about/', t.about(aboutHtml));
 await write('/listen/', t.listen());
 await write('/game/', t.game());
+await write('/search/', t.search(), { index: false });
 await write('/404.html', t.notFound(episodes), { index: false });
 
 const pageCount = Math.ceil(episodes.length / perPage);
 for (let p = 1; p <= pageCount; p++) {
   const slice = episodes.slice((p - 1) * perPage, p * perPage);
-  await write(p === 1 ? '/episodes/' : `/episodes/${p}/`, t.episodeList(slice, p, pageCount, episodes.length), { lastmod: newest });
+  await write(p === 1 ? '/episodes/' : `/episodes/${p}/`, t.episodeList(slice, p, pageCount), { lastmod: newest });
 }
 // The old site called page one /episodes/1
 await write('/episodes/1/', t.redirect(`${cfg.siteUrl}/episodes/`), { index: false });
@@ -89,13 +97,14 @@ for (let p = pageCount + 1; p <= Math.ceil(episodes.length / 5); p++) {
 }
 
 let withTranscript = 0;
+const transcriptText = {};
 const opts = { localDir: path.join(root, 'content/transcripts'), cacheDir: path.join(root, '.cache/transcripts') };
 const queue = episodes.map((ep, i) => ({ ep, i }));
 async function worker() {
   for (let job = queue.shift(); job; job = queue.shift()) {
     const { ep, i } = job;
     const transcriptHtml = await getTranscript(ep, opts);
-    if (transcriptHtml) withTranscript++;
+    if (transcriptHtml) { withTranscript++; transcriptText[ep.slug] = plainText(transcriptHtml).replace(/\s+/g, ' ').trim(); }
     await write(t.epPath(ep), t.episode(ep, {
       newer: episodes[i - 1], older: episodes[i + 1], transcriptHtml, extra: extras[ep.slug],
     }), { lastmod: ep.date });
@@ -103,6 +112,21 @@ async function worker() {
 }
 await Promise.all(Array.from({ length: 6 }, worker));
 console.log(`  ${withTranscript} of ${episodes.length} episode pages have a transcript`);
+
+// Search: a small index of every episode, and a separate file of transcript text
+// that the search page loads after the first results are on screen.
+await writeFile(path.join(dist, 'search-index.json'), JSON.stringify(episodes.map((ep) => ({
+  s: ep.slug,
+  t: ep.title,
+  n: ep.number ?? null,
+  k: ep.number != null ? `Episode ${ep.number}` : ep.type === 'bonus' ? 'Bonus' : ep.type === 'trailer' ? 'Trailer' : '',
+  d: ep.date ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: cfg.timeZone }).format(ep.date) : '',
+  m: ep.seconds ? Math.round(ep.seconds / 60) : 0,
+  i: ep.thumb ? (ep.thumb.startsWith('/') ? `${base}${ep.thumb}` : ep.thumb) : `${base}/img/logo.jpg`,
+  x: ep.lead.join(' '),
+  o: plainText(ep.notesHtml || '').replace(/\s+/g, ' ').trim(),
+}))));
+await writeFile(path.join(dist, 'search-transcripts.json'), JSON.stringify(transcriptText));
 
 for (const [name, target] of Object.entries(cfg.redirects || {})) {
   if (target) await write(`/${name}/`, t.redirect(target), { index: false });

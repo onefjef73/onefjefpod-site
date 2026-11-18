@@ -1,5 +1,8 @@
 // Every page's HTML lives here. Text that changes often is in site.config.json
 // and content/about.md, so this file rarely needs touching.
+import { readFileSync } from 'node:fs';
+
+const ICONS = JSON.parse(readFileSync(new URL('./icons.json', import.meta.url), 'utf8'));
 
 export const esc = (s) => String(s ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -28,17 +31,62 @@ const clock = (sec) => {
   return `${h ? h + ':' : ''}${mm}:${String(s).padStart(2, '0')}`;
 };
 
+// Which brand logo goes with a link, worked out from its name or address.
+const iconKey = (l) => {
+  const s = `${l.name} ${l.url}`.toLowerCase();
+  if (s.includes('apple')) return 'applepodcasts';
+  if (s.includes('spotify')) return 'spotify';
+  if (s.includes('pocket')) return 'pocketcasts';
+  if (s.includes('youtube')) return 'youtube';
+  if (s.includes('instagram')) return 'instagram';
+  if (s.includes('tiktok')) return 'tiktok';
+  if (s.includes('substack')) return 'substack';
+  if (s.includes('facebook')) return 'facebook';
+  if (s.includes('patreon')) return 'patreon';
+  if (s.includes('rss') || s.includes('feed')) return 'rss';
+  return null;
+};
+const icon = (key, size = 22) => {
+  const i = ICONS[key];
+  if (!i) return '';
+  // Black logos (TikTok, Patreon) follow the text colour so they show in dark mode too.
+  const color = i.hex && i.hex !== '000000' ? ` style="color:#${i.hex}"` : '';
+  return `<svg class="logo-i" viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true"${color}><path fill="currentColor" d="${i.path}"/></svg>`;
+};
+
+// Phone numbers in show notes (like 1-669-241-5882) never break across two lines,
+// and tapping one on a phone calls it. Only text between tags is touched.
+const keepPhoneTogether = (html) => html.split(/(<[^>]+>)/).map((part, i, all) => {
+  if (part.startsWith('<')) return part;
+  const insideLink = all.slice(0, i).reverse().find((t) => /^<\/?a[\s>]/i.test(t));
+  return part.replace(/\b(1[-.\s])?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b/g, (num) => {
+    const digits = num.replace(/\D/g, '');
+    const shown = `<span class="nowrap">${num}</span>`;
+    const nb = num.replace(/-/g, '\u2011');
+    return insideLink && !/^<\//.test(insideLink) ? shown : `<a class="nowrap" href="tel:+${digits.length === 10 ? '1' + digits : digits}">${nb}</a>`;
+  });
+}).join('');
+
+// The short "Onefjef is produced, edited & hosted by Jef Taylor." line stays on one
+// line on phones; it shrinks a little on very narrow screens instead of wrapping.
+const creditOneLine = (html) => html.replace(/<p>((?:(?!<\/p>).)*?produced, edited(?:(?!<\/p>).)*?)<\/p>/gs, (whole, inner) => {
+  const text = inner.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').trim();
+  return text.length <= 56 ? `<p class="credit">${inner}</p>` : whole;
+});
+
 export function makeTemplates(cfg, base, show) {
-  const L = cfg.labels;
+  const design = cfg.design || 'a';
   const url = (p) => `${base}${p}`;
   const asset = (p) => `${base}${p}${cfg._fingerprints?.[p] ? `?v=${cfg._fingerprints[p]}` : ''}`;
   const abs = (p) => `${cfg.siteUrl}${p}`;
   const fmtDate = (d) => d ? new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: cfg.timeZone }).format(d) : '';
+  const fmtShort = (d) => d ? new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: cfg.timeZone }).format(d) : '';
   const isoDate = (d) => d ? d.toISOString() : undefined;
   const epPath = (ep) => `/episode/${ep.slug}/`;
   // A photo path starting with / is a file in static/; anything else is a full web address.
   const hostPhoto = cfg.host.photo?.startsWith('/') ? asset(cfg.host.photo) : cfg.host.photo;
   const hostPhotoAbs = cfg.host.photo?.startsWith('/') ? abs(cfg.host.photo) : cfg.host.photo;
+  const showArt = asset('/img/logo.jpg');
 
   const seriesLd = {
     '@type': 'PodcastSeries',
@@ -54,18 +102,21 @@ export function makeTemplates(cfg, base, show) {
     author: { '@type': 'Person', '@id': abs('/about/#host'), name: cfg.host.name, url: abs('/about/') },
   };
 
-  function layout({ title, description, path, body, image, type = 'website', ld = [], noindex = false, pageClass = '', head = '', card = 'summary_large_image' }) {
+  const searchIcon = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+
+  function layout({ title, description, path, body, image, type = 'website', ld = [], noindex = false, pageClass = '', head = '', card = 'summary_large_image', current = '' }) {
     const canonical = abs(path);
     const img = image || abs('/img/og-default.jpg');
     const graph = { '@context': 'https://schema.org', '@graph': ld };
+    const navItem = (href, label, key) => `<a href="${url(href)}"${current === key ? ' aria-current="page"' : ''}>${label}</a>`;
     return `<!doctype html>
-<html lang="${esc(cfg.language)}">
+<html lang="${esc(cfg.language)}" class="design-${design}" data-theme="${cfg.defaultTheme}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-${noindex ? '<meta name="robots" content="noindex">' : '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">'}
+${noindex || cfg.noindex ? '<meta name="robots" content="noindex">' : '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">'}
 <link rel="canonical" href="${esc(canonical)}">
 <meta property="og:site_name" content="${esc(cfg.showName)}">
 <meta property="og:type" content="${type}">
@@ -84,46 +135,54 @@ ${head}
 <link rel="icon" type="image/png" href="${url('/img/icon-192.png')}" sizes="192x192">
 <link rel="apple-touch-icon" href="${url('/img/apple-touch-icon.png')}">
 <link rel="manifest" href="${url('/site.webmanifest')}">
-<meta name="theme-color" content="#efefef">
-<script>(function(){var t='light';try{if(localStorage.getItem('theme')==='dark')t='dark'}catch(e){}document.documentElement.dataset.theme=t})()</script>
+<link rel="preload" href="${url(design === 'b' ? '/fonts/instrument-sans-latin-wght-normal.woff2' : '/fonts/archivo-latin-wght-normal.woff2')}" as="font" type="font/woff2" crossorigin>
+<script>(function(){var r=document.documentElement;try{var t=localStorage.getItem('${cfg.themeKey}');if(t==='dark'||t==='light')r.dataset.theme=t}catch(e){}})()</script>
 <link rel="stylesheet" href="${asset('/styles.css')}">
 ${ld.length ? jsonLd(graph) : ''}
 </head>
 <body class="${pageClass}">
 <a class="skip" href="#main">Skip to content</a>
 <header class="top">
-  <a class="brand" href="${url('/')}" aria-label="${esc(cfg.showName)} home">${esc(cfg.showName)}</a>
-  <nav aria-label="Main">
-    <a href="${url('/episodes/')}">episodes</a>
-    <a href="${url('/about/')}">about</a>
-    <a href="${url('/listen/')}">listen</a>
-    ${cfg.support?.url ? `<a class="nav-support" href="${esc(cfg.support.url)}" rel="noopener">patreon</a>` : ''}
-    <a href="${url('/game/')}">game</a>
-  </nav>
-  <button class="theme" type="button" aria-label="Switch between light and dark" title="Switch between light and dark">
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
-  </button>
+  <div class="top-in">
+    <a class="brand" href="${url('/')}">
+      <span class="brand-name">${esc(cfg.showName)}</span>
+      <span class="brand-tag">${esc(cfg.tagline)}</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      ${navItem('/episodes/', 'Episodes', 'episodes')}
+      ${navItem('/about/', 'About', 'about')}
+      ${navItem('/listen/', 'Listen', 'listen')}
+      ${cfg.support?.url ? `<a href="${esc(cfg.support.url)}" rel="noopener">Patreon</a>` : ''}
+      ${navItem('/game/', 'Game', 'game')}
+    </nav>
+    <form class="top-search" action="${url('/search/')}" method="get" role="search" aria-label="Search the site">
+      <label class="sr-only" for="top-q">Search episodes</label>
+      ${searchIcon}
+      <input id="top-q" name="q" type="search" placeholder="Search" autocomplete="off">
+      <button class="sr-only" type="submit">Search</button>
+    </form>
+    <a class="icon-btn search-link" href="${url('/search/')}" aria-label="Search">${searchIcon}</a>
+    <button class="icon-btn theme" type="button" data-theme-key="${cfg.themeKey}" aria-label="Switch between light and dark" title="Switch between light and dark">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></svg>
+    </button>
+  </div>
 </header>
 <main id="main">
 ${body}
 </main>
 <footer class="foot">
-  <div class="foot-map" aria-hidden="true"></div>
-  <div class="foot-in">
-    <div class="foot-col">
-      <p class="foot-brand">${esc(cfg.showName)}</p>
-      <p>${esc(cfg.tagline)}</p>
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <a class="brand" href="${url('/')}"><span class="brand-name">${esc(cfg.showName)}</span><span class="brand-tag">${esc(cfg.tagline)}</span></a>
       ${cfg.contact?.email ? `<p><a href="mailto:${esc(cfg.contact.email)}">${esc(cfg.contact.email)}</a></p>` : ''}
-      ${cfg.contact?.voicemail ? `<p>Leave a voicemail: <a href="tel:+${esc(cfg.contact.voicemail.replace(/\D/g, ''))}">${esc(cfg.contact.voicemail)}</a></p>` : ''}
+      ${cfg.contact?.voicemail ? `<p>Voicemail: <a href="tel:+${esc(cfg.contact.voicemail.replace(/\D/g, ''))}">${esc(cfg.contact.voicemail).replace(/-/g, '\u2011')}</a></p>` : ''}
     </div>
-    <div class="foot-col">
-      <ul class="plain">${cfg.listen.map((l) => `<li><a href="${esc(l.url)}" rel="noopener">${esc(l.name)}</a></li>`).join('')}</ul>
-    </div>
-    <div class="foot-col">
-      <ul class="plain">${cfg.social.map((l) => `<li><a href="${esc(l.url)}" rel="noopener me">${esc(l.name)}</a></li>`).join('')}</ul>
+    <div class="foot-side">
+      ${socialIcons()}
+      <p><a href="${url('/listen/')}">All the ways to listen</a></p>
     </div>
   </div>
-  <p class="foot-legal">© ${cfg.copyrightStartYear && cfg.copyrightStartYear < new Date().getFullYear() ? `${cfg.copyrightStartYear} - ` : ''}${new Date().getFullYear()} ${esc((cfg.copyright || show.copyright || cfg.host.name).replace(/^(copyright|©|\(c\))\s*(\d{4})?\s*/i, ''))}</p>
+  <p class="wrap foot-legal">© ${cfg.copyrightStartYear && cfg.copyrightStartYear < new Date().getFullYear() ? `${cfg.copyrightStartYear} - ` : ''}${new Date().getFullYear()} ${esc((cfg.copyright || show.copyright || cfg.host.name).replace(/^(copyright|©|\(c\))\s*(\d{4})?\s*/i, ''))}</p>
 </footer>
 <script src="${asset('/app.js')}" defer></script>
 </body>
@@ -131,112 +190,154 @@ ${body}
 `;
   }
 
-  const thumb = (ep, eager) => {
-    if (!ep.thumb) return '';
-    const src = ep.thumb.startsWith('/') ? url(ep.thumb) : ep.thumb;
-    return `<img class="thumb" src="${esc(src)}" width="480" height="480" alt=""${eager ? '' : ' loading="lazy"'}>`;
+  const thumb = (ep, { eager = false, cls = 'thumb', alt = '' } = {}) => {
+    const src = ep.thumb ? (ep.thumb.startsWith('/') ? url(ep.thumb) : ep.thumb) : showArt;
+    return `<img class="${cls}" src="${esc(src)}" width="480" height="480" alt="${esc(alt)}"${eager ? '' : ' loading="lazy"'}>`;
   };
-  const epLabel = (ep) => ep.number != null ? `<span class="row-num">Episode ${ep.number}</span>`
-    : ep.type === 'bonus' ? '<span class="row-num">Bonus</span>' : ep.type === 'trailer' ? '<span class="row-num">Trailer</span>' : '';
-
-  const epNumber = (ep) => ep.number != null ? `<span class="num">${ep.number}</span>` : `<span class="num num-none" aria-hidden="true">+</span>`;
-
-  const metaLine = (ep, labelShown = false) => [
-    ep.date ? `<time datetime="${isoDate(ep.date)}">${fmtDate(ep.date)}</time>` : '',
+  const epKind = (ep) => ep.number != null ? `Episode ${ep.number}` : ep.type === 'bonus' ? 'Bonus' : ep.type === 'trailer' ? 'Trailer' : '';
+  const metaLine = (ep, withKind = true, long = false) => [
+    withKind && epKind(ep) ? `<span class="kind">${epKind(ep)}</span>` : '',
+    ep.date ? `<time datetime="${isoDate(ep.date)}">${long ? fmtDate(ep.date) : fmtShort(ep.date)}</time>` : '',
     ep.seconds ? `<span>${fmtDuration(ep.seconds)}</span>` : '',
-    labelShown ? '' : ep.type === 'trailer' ? '<span>Trailer</span>' : ep.type === 'bonus' ? '<span>Bonus</span>' : '',
   ].filter(Boolean).join('');
 
-  const row = (ep) => `<li class="row${ep.thumb ? ' has-thumb' : ''}">
-  <a href="${url(epPath(ep))}">
-    ${ep.thumb ? thumb(ep) : epNumber(ep)}
-    <span class="row-main">
-      ${ep.thumb ? epLabel(ep) : ''}
-      <span class="row-title">${esc(ep.title)}</span>
-      <span class="row-meta">${metaLine(ep, !!ep.thumb)}</span>
-      ${ep.lead.map((t) => `<span class="row-ex">${esc(t)}</span>`).join('')}
-    </span>
-  </a>
+  const row = (ep, h = 3) => `<li class="row">
+  <a class="row-art" href="${url(epPath(ep))}" tabindex="-1" aria-hidden="true">${thumb(ep)}</a>
+  <div class="row-main">
+    <p class="meta">${metaLine(ep)}</p>
+    <h${h} class="row-title"><a href="${url(epPath(ep))}">${esc(ep.title)}</a></h${h}>
+    ${ep.lead.map((t) => `<p class="row-ex">${esc(t)}</p>`).join('')}
+  </div>
+</li>`;
+
+  const tile = (ep, h = 3) => `<li class="tile">
+  <a class="tile-art" href="${url(epPath(ep))}" tabindex="-1" aria-hidden="true">${thumb(ep)}</a>
+  <p class="meta">${metaLine(ep)}</p>
+  <h${h} class="tile-title"><a href="${url(epPath(ep))}">${esc(ep.title)}</a></h${h}>
+  ${ep.lead.map((t) => `<p class="tile-ex">${esc(t)}</p>`).join('')}
 </li>`;
 
   const player = (ep) => ep.audio ? `<div class="player" data-player>
   <audio preload="none" src="${esc(ep.audio)}"${ep.seconds ? ` data-duration="${ep.seconds}"` : ''}></audio>
   <button class="p-play" type="button" data-play aria-label="Play ${esc(ep.title)}">
-    <svg class="i-play" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M7 4v16l14-8z" fill="currentColor"/></svg>
-    <svg class="i-pause" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="currentColor"/></svg>
+    <svg class="i-play" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+    <svg class="i-pause" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>
   </button>
   <div class="p-body">
     <input class="p-seek" type="range" min="0" max="${ep.seconds || 100}" value="0" step="1" data-seek aria-label="Position in episode">
     <div class="p-row">
       <span class="p-time"><span data-now>0:00</span> / <span data-total>${ep.seconds ? clock(ep.seconds) : '–:––'}</span></span>
       <span class="p-ctl">
-        <button type="button" data-skip="-15" aria-label="Back 15 seconds">−15</button>
-        <button type="button" data-skip="30" aria-label="Forward 30 seconds">+30</button>
-        <button type="button" data-speed aria-label="Playback speed">1×</button>
+        <button type="button" data-skip="-15" title="Back 15 seconds">−15s<span class="sr-only"> back</span></button>
+        <button type="button" data-skip="30" title="Forward 30 seconds">+30s<span class="sr-only"> forward</span></button>
+        <button type="button" data-speed title="Playback speed"><span data-speed-val>1×</span><span class="sr-only"> playback speed</span></button>
       </span>
     </div>
   </div>
 </div>` : '';
 
-  const listenButtons = () => `<ul class="btns">${cfg.listen.map((l) =>
-    `<li><a class="btn" href="${esc(l.url)}" rel="noopener">${esc(l.name)}</a></li>`).join('')}</ul>`;
+  const listenButtons = (links = cfg.listen, cls = '') => `<ul class="logo-btns ${cls}">${links.map((l) =>
+    `<li><a class="logo-btn" href="${esc(l.url)}" rel="noopener">${icon(iconKey(l))}<span>${esc(l.name)}</span></a></li>`).join('')}</ul>`;
 
-  const supportBand = () => cfg.support?.url ? `<section class="band news">
-  <div class="wrap">
-    <h2 class="news-h">${esc(cfg.support.heading)}</h2>
-    ${cfg.support.body ? `<p class="news-p">${esc(cfg.support.body)}</p>` : ''}
-    <a class="btn btn-solid" href="${esc(cfg.support.url)}" rel="noopener">${esc(cfg.support.button)}</a>
+  function socialIcons() {
+    return `<ul class="social">${cfg.social.map((l) => `<li><a href="${esc(l.url)}" rel="noopener me" aria-label="${esc(cfg.showName)} on ${esc(l.name)}" title="${esc(l.name)}">${icon(iconKey(l), 20) || esc(l.name)}</a></li>`).join('')}</ul>`;
+  }
+
+  const supportBox = (cls = '') => cfg.support?.url ? `<div class="support ${cls}">
+  <h2 class="support-h">${esc(cfg.support.heading)}</h2>
+  ${cfg.support.body ? `<p>${esc(cfg.support.body)}</p>` : ''}
+  <a class="btn btn-solid" href="${esc(cfg.support.url)}" rel="noopener">${icon('patreon', 18)}${esc(cfg.support.button)}</a>
+</div>` : '';
+  const supportBand = () => cfg.support?.url ? `<section class="band support-band"><div class="wrap">${supportBox()}</div></section>` : '';
+
+  const latestBlock = (latest) => `<div class="block-head latest-head"><h2 class="block-h">Latest episode</h2></div>
+<article class="latest" aria-label="Latest episode">
+  <a class="latest-art" href="${url(epPath(latest))}" tabindex="-1" aria-hidden="true">${thumb(latest, { eager: true })}</a>
+  <div class="latest-main">
+    <p class="meta">${metaLine(latest)}</p>
+    <h3 class="latest-title"><a href="${url(epPath(latest))}">${esc(latest.title)}</a></h3>
+    ${latest.lead.map((t) => `<p>${esc(t)}</p>`).join('')}
   </div>
-</section>` : '';
-
-  function home(episodes, aboutShort) {
-    const latest = episodes[0];
-    const rest = episodes.slice(1, 1 + cfg.homeEpisodeCount);
-    const body = `<section class="hero">
-  <h1 class="hero-card">
-    <span class="only-light">
-      <img class="hc-wide" src="${asset('/img/hero-wide-2400.webp')}" width="2400" height="792" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" fetchpriority="high">
-      <img class="hc-square" src="${asset('/img/hero-square-1600.webp')}" width="1600" height="779" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
-    </span>
-    <span class="only-dark">
-      <img class="hc-wide" src="${asset('/img/hero-wide-dark-2400.webp')}" width="2400" height="792" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
-      <img class="hc-square" src="${asset('/img/hero-square-dark-1600.webp')}" width="1600" height="779" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)}" loading="lazy">
-    </span>
-  </h1>
-</section>
-${latest ? `<section class="latest wrap" aria-labelledby="latest-h">
-  <div class="card">
-    <h2 class="paren" id="latest-h">${esc(L.latest)}</h2>
-    <div class="card-grid">
-      ${latest.thumb ? `<a class="card-thumb" href="${url(epPath(latest))}" tabindex="-1" aria-hidden="true">${thumb(latest, true)}</a>` : ''}
-      <div>
-        <p class="card-meta">${latest.number != null ? `<span>Episode ${latest.number}</span>` : ''}${metaLine(latest)}</p>
-        <h3 class="card-title"><a href="${url(epPath(latest))}">${esc(latest.title)}</a></h3>
-        ${latest.lead.map((t) => `<p class="card-ex">${esc(t)}</p>`).join('')}
-      </div>
-    </div>
+  <div class="latest-play">
     ${player(latest)}
-    <p class="card-more"><a href="${url(epPath(latest))}">Show notes and transcript</a></p>
+    <p class="latest-more"><a href="${url(epPath(latest))}">Show notes and transcript</a></p>
   </div>
-</section>` : ''}
-<section class="wrap block" aria-labelledby="eps-h">
-  <h2 class="paren" id="eps-h">${esc(L.episodes)}</h2>
-  <ol class="rows" reversed>${rest.map(row).join('\n')}</ol>
-  <p class="more"><a class="btn" href="${url('/episodes/')}">All ${episodes.length} episodes</a></p>
+</article>`;
+
+  const sideAbout = () => `<aside class="side">
+  <section class="side-box">
+    <img class="side-art" src="${showArt}" width="600" height="600" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)} artwork" loading="lazy">
+    <h2 class="side-h">About the podcast</h2>
+    <div class="side-desc">${show.descriptionHtml || `<p>${esc(cfg.tagline)}</p>`}</div>
+    <a class="side-host" href="${url('/about/')}">
+      ${cfg.host.photo ? `<img src="${esc(hostPhoto)}" width="56" height="56" alt="" loading="lazy">` : ''}
+      <span>Hosted by <strong>${esc(cfg.host.name)}</strong></span>
+    </a>
+  </section>
+  <section class="side-box">
+    <h2 class="side-h">Listen for free</h2>
+    ${listenButtons(cfg.listen, 'stack')}
+  </section>
+  <section class="side-box">
+    <h2 class="side-h">Follow</h2>
+    ${socialIcons()}
+  </section>
+  ${supportBox('side-box')}
+</aside>`;
+
+  function home(episodes) {
+    const latest = episodes[0];
+    const count = cfg.homeEpisodeCount;
+    const h1 = `<h1 class="sr-only">${esc(cfg.showName)}: ${esc(cfg.tagline)}</h1>`;
+    let body;
+    if (design === 'b') {
+      body = `${h1}
+<section class="feature">
+  <div class="wrap">${latest ? latestBlock(latest) : ''}</div>
+</section>
+<section class="wrap block" aria-labelledby="recent-h">
+  <div class="block-head">
+    <h2 class="block-h" id="recent-h">Recent episodes</h2>
+    <a class="block-link" href="${url('/episodes/')}">All ${episodes.length} episodes</a>
+  </div>
+  <ol class="tiles">${episodes.slice(1, 1 + count).map((e) => tile(e)).join('\n')}</ol>
 </section>
 <section class="band about-band" aria-labelledby="about-h">
-  <div class="wrap two">
+  <div class="wrap about-grid">
     <div>
-      <h2 class="paren" id="about-h">${esc(L.about)}</h2>
+      <h2 class="block-h" id="about-h">About the podcast</h2>
       <div class="lede">${show.descriptionHtml || `<p>${esc(cfg.tagline)}</p>`}</div>
+      <a class="side-host" href="${url('/about/')}">
+        ${cfg.host.photo ? `<img src="${esc(hostPhoto)}" width="56" height="56" alt="" loading="lazy">` : ''}
+        <span>Hosted by <strong>${esc(cfg.host.name)}</strong></span>
+      </a>
     </div>
     <div>
-      <h2 class="paren">${esc(L.listen)}</h2>
+      <h2 class="block-h">Listen for free</h2>
       ${listenButtons()}
+      <h2 class="block-h follow-h">Follow</h2>
+      ${socialIcons()}
     </div>
   </div>
 </section>
 ${supportBand()}`;
+    } else {
+      body = `${h1}
+<div class="wrap with-side">
+  <div class="main-col">
+    ${latest ? latestBlock(latest) : ''}
+    <section class="block" aria-labelledby="recent-h">
+      <div class="block-head">
+        <h2 class="block-h" id="recent-h">More episodes</h2>
+        <a class="block-link" href="${url('/episodes/')}">All ${episodes.length} episodes</a>
+      </div>
+      <ol class="rows">${episodes.slice(1, 1 + count).map((e) => row(e)).join('\n')}</ol>
+      <p class="more"><a class="btn" href="${url('/episodes/')}">See all ${episodes.length} episodes</a></p>
+    </section>
+  </div>
+  ${sideAbout()}
+</div>`;
+    }
     return layout({
       title: `${cfg.showName}: ${cfg.tagline} (podcast)`,
       description: show.description ? show.description.slice(0, 300) : cfg.tagline,
@@ -250,7 +351,11 @@ ${supportBand()}`;
     });
   }
 
-  function episodeList(pageEps, page, pages, total) {
+  function pageHead(title, sub = '') {
+    return `<header class="page-head"><h1 class="page-h">${title}</h1>${sub ? `<p class="page-sub">${sub}</p>` : ''}</header>`;
+  }
+
+  function episodeList(pageEps, page, pages) {
     const path = page === 1 ? '/episodes/' : `/episodes/${page}/`;
     const pageUrl = (n) => url(n === 1 ? '/episodes/' : `/episodes/${n}/`);
     const nav = pages > 1 ? `<nav class="pager" aria-label="Episode pages">
@@ -259,9 +364,14 @@ ${supportBand()}`;
     n === page ? `<li><span aria-current="page">${n}</span></li>` : `<li><a href="${pageUrl(n)}">${n}</a></li>`).join('')}</ol>
   ${page < pages ? `<a class="btn" href="${pageUrl(page + 1)}" rel="next">Older</a>` : '<span></span>'}
 </nav>` : '';
-    const body = `<section class="wrap block page-top">
-  <h1 class="paren big">${esc(L.episodes)}</h1>
-  <ol class="rows" reversed>${pageEps.map(row).join('\n')}</ol>
+    const list = design === 'b' ? `<ol class="tiles">${pageEps.map((e) => tile(e, 2)).join('\n')}</ol>` : `<ol class="rows">${pageEps.map((e) => row(e, 2)).join('\n')}</ol>`;
+    const body = `<section class="wrap block${design === 'a' ? ' narrow-ish' : ''}">
+  ${pageHead('Episodes')}
+  <form class="search-inline" action="${url('/search/')}" method="get" role="search" aria-label="Search episodes">
+    <label class="sr-only" for="list-q">Search episodes</label>
+    ${searchIcon}<input id="list-q" name="q" type="search" placeholder="Search every episode and transcript" autocomplete="off"><button class="sr-only" type="submit">Search</button>
+  </form>
+  ${list}
   ${nav}
 </section>`;
     return layout({
@@ -269,9 +379,10 @@ ${supportBand()}`;
       description: `Every episode of ${cfg.showName}: ${cfg.tagline}.${page > 1 ? ` Page ${page} of ${pages}.` : ''}`,
       path,
       body,
+      current: 'episodes',
       ld: [
         seriesLd,
-        { '@type': 'ItemList', itemListElement: pageEps.map((e, i) => ({ '@type': 'ListItem', position: (page - 1) * pageEps.length + i + 1, url: abs(epPath(e)), name: e.title })) },
+        { '@type': 'ItemList', itemListElement: pageEps.map((e, i) => ({ '@type': 'ListItem', position: (page - 1) * cfg.episodesPerPage + i + 1, url: abs(epPath(e)), name: e.title })) },
         { '@type': 'BreadcrumbList', itemListElement: [
           { '@type': 'ListItem', position: 1, name: cfg.showName, item: abs('/') },
           { '@type': 'ListItem', position: 2, name: 'Episodes', item: abs('/episodes/') },
@@ -284,36 +395,31 @@ ${supportBand()}`;
     const path = epPath(ep);
     // A video set in content/episodes.json wins; otherwise use the one from Captivate.
     const extra = { ...(extraIn || {}), youtube: extraIn?.youtube || ep.youtube || '' };
-    const paren = extra?.parenthetical ? `<p class="ep-paren">${esc(extra.parenthetical)}</p>` : '';
     const video = extra?.youtube ? `<section class="ep-sec" aria-labelledby="watch-h">
-    <h2 class="paren" id="watch-h">${esc(L.watch)}</h2>
+    <h2 class="sec-h" id="watch-h">Watch</h2>
     <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${esc(extra.youtube)}" title="${esc(ep.title)}" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
   </section>` : '';
-    const shareUrl = encodeURIComponent(abs(path));
-    const body = `<article class="ep wrap">
-  <header class="ep-head page-top">
-    <p class="crumb"><a href="${url('/episodes/')}">All episodes</a></p>
-    <div class="ep-top${ep.thumb ? ' has-thumb' : ''}">
-      ${ep.thumb ? thumb(ep, true).replace('alt=""', `alt="Artwork for ${esc(ep.title)}"`) : epNumber(ep)}
-      <div>
-        ${paren}
-        <h1 class="ep-title">${esc(ep.title)}</h1>
-        <p class="row-meta">${ep.thumb && ep.number != null ? `<span>Episode ${ep.number}</span>` : ''}${metaLine(ep)}</p>
-      </div>
+    const body = `<article class="ep wrap narrow">
+  <p class="crumb"><a href="${url('/episodes/')}">All episodes</a></p>
+  <header class="ep-head">
+    ${thumb(ep, { eager: true, cls: 'thumb ep-art', alt: `Artwork for ${ep.title}` })}
+    <div>
+      <p class="meta">${metaLine(ep)}</p>
+      <h1 class="ep-title">${esc(ep.title)}</h1>
     </div>
-    ${player(ep)}
-    <ul class="btns small">${cfg.listen.filter((l) => !/rss/i.test(l.name)).map((l) =>
-      `<li><a class="btn" href="${esc(l.url)}" rel="noopener">${esc(l.name)}</a></li>`).join('')}
-      <li><button class="btn" type="button" data-share data-url="${esc(abs(path))}" data-title="${esc(ep.title)}">Copy link</button></li>
-    </ul>
   </header>
+  ${player(ep)}
+  <div class="ep-actions">
+    ${listenButtons(cfg.listen.filter((l) => !/rss/i.test(l.name)), 'small')}
+    <button class="logo-btn share-btn" type="button" data-share data-url="${esc(abs(path))}" data-title="${esc(ep.title)}"><svg class="logo-i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M10.6 13.4a4 4 0 0 0 5.66 0l3.18-3.18a4 4 0 0 0-5.66-5.66l-1.1 1.1M13.4 10.6a4 4 0 0 0-5.66 0l-3.18 3.18a4 4 0 0 0 5.66 5.66l1.1-1.1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span data-share-label>Copy link</span></button>
+  </div>
   ${video}
   <section class="ep-sec" aria-labelledby="notes-h">
-    <h2 class="paren" id="notes-h">${esc(L.notes)}</h2>
-    <div class="prose">${ep.notesHtml || '<p>No show notes for this episode.</p>'}</div>
+    <h2 class="sec-h" id="notes-h">Show notes</h2>
+    <div class="prose">${ep.notesHtml ? creditOneLine(keepPhoneTogether(ep.notesHtml)) : '<p>No show notes for this episode.</p>'}</div>
   </section>
   ${transcriptHtml ? `<section class="ep-sec" aria-labelledby="tr-h">
-    <h2 class="paren" id="tr-h">${esc(L.transcript)}</h2>
+    <h2 class="sec-h" id="tr-h">Transcript</h2>
     <div class="prose transcript" id="transcript" data-clamp>${transcriptHtml}</div>
     <button class="btn" type="button" data-expand aria-controls="transcript" hidden>Read the full transcript</button>
   </section>` : ''}
@@ -325,13 +431,14 @@ ${supportBand()}`;
 ${supportBand()}`;
     const image = ep.image || show.image || abs('/img/og-default.jpg');
     return layout({
-      title: `${ep.title}${ep.number != null ? ` (Ep. ${ep.number})` : ''} | ${cfg.showName}`,
+      title: (ep.number != null && ep.title.length + cfg.showName.length < 52) ? `${ep.title} (Ep. ${ep.number}) | ${cfg.showName}` : `${ep.title} | ${cfg.showName}`,
       description: ep.excerpt || `${ep.title}, an episode of ${cfg.showName}.`,
       path,
       body,
       image,
       type: 'article',
       card: 'summary',
+      current: 'episodes',
       head: [
         ep.date ? `<meta property="article:published_time" content="${isoDate(ep.date)}">` : '',
         ep.audio ? `<meta property="og:audio" content="${esc(ep.audio)}">\n<meta property="og:audio:type" content="${esc(ep.audioType)}">` : '',
@@ -354,6 +461,7 @@ ${supportBand()}`;
           isAccessibleForFree: true,
           partOfSeries: { '@id': abs('/#podcast') },
           associatedMedia: ep.audio ? { '@type': 'AudioObject', contentUrl: ep.audio, encodingFormat: ep.audioType, duration: isoDuration(ep.seconds) } : undefined,
+          video: extra?.youtube ? { '@type': 'VideoObject', name: ep.title, embedUrl: `https://www.youtube.com/embed/${extra.youtube}`, url: `https://www.youtube.com/watch?v=${extra.youtube}`, thumbnailUrl: `https://i.ytimg.com/vi/${extra.youtube}/hqdefault.jpg`, uploadDate: isoDate(ep.date), description: ep.excerpt || ep.title } : undefined,
         },
         seriesLd,
         { '@type': 'BreadcrumbList', itemListElement: [
@@ -366,22 +474,23 @@ ${supportBand()}`;
   }
 
   function about(aboutHtml) {
-    const body = `<section class="wrap block page-top">
-  <h1 class="paren big">${esc(L.about)}</h1>
-  <div class="two">
+    const body = `<section class="wrap block about-sec">
+  ${pageHead('About')}
+  <div class="about-grid about-page">
     <div>
-      <h2 class="h-plain">The show</h2>
+      <h2 class="block-h">The podcast</h2>
       <div class="lede">${show.descriptionHtml || `<p>${esc(cfg.tagline)}</p>`}</div>
-      <h2 class="h-plain">${esc(cfg.host.name)}</h2>
+      <h2 class="block-h">${esc(cfg.host.name)}</h2>
       <div class="prose">${aboutHtml}</div>
     </div>
     <aside>
       ${cfg.host.photo ? `<img class="host-photo" src="${esc(hostPhoto)}" alt="${esc(cfg.host.name)}" width="480" height="480" loading="lazy">` : ''}
       <ul class="plain contact">
         ${cfg.contact?.email ? `<li><a href="mailto:${esc(cfg.contact.email)}">${esc(cfg.contact.email)}</a></li>` : ''}
-        ${cfg.contact?.voicemail ? `<li>Voicemail: <a href="tel:+${esc(cfg.contact.voicemail.replace(/\D/g, ''))}">${esc(cfg.contact.voicemail)}</a></li>` : ''}
+        ${cfg.contact?.voicemail ? `<li>Voicemail: <a href="tel:+${esc(cfg.contact.voicemail.replace(/\D/g, ''))}">${esc(cfg.contact.voicemail).replace(/-/g, '\u2011')}</a></li>` : ''}
         ${cfg.host.website ? `<li><a href="${esc(cfg.host.website)}" rel="noopener me">${esc(cfg.host.website.replace(/^https?:\/\//, ''))}</a></li>` : ''}
       </ul>
+      ${socialIcons()}
     </aside>
   </div>
 </section>
@@ -391,6 +500,7 @@ ${supportBand()}`;
       description: `About ${cfg.showName}, a podcast about ${cfg.tagline.toLowerCase()}, and its host, ${cfg.host.name}.`,
       path: '/about/',
       body,
+      current: 'about',
       ld: [
         seriesLd,
         { '@type': 'Person', '@id': abs('/about/#host'), name: cfg.host.name, url: abs('/about/'), image: hostPhotoAbs || undefined,
@@ -400,12 +510,12 @@ ${supportBand()}`;
   }
 
   function listen() {
-    const body = `<section class="wrap block page-top">
-  <h1 class="paren big">${esc(L.listen)}</h1>
-  <h2 class="h-plain">Pick your podcast app</h2>
-  ${listenButtons()}
-  <h2 class="h-plain">Follow along</h2>
-  <ul class="btns">${cfg.social.map((l) => `<li><a class="btn" href="${esc(l.url)}" rel="noopener me">${esc(l.name)}</a></li>`).join('')}</ul>
+    const body = `<section class="wrap block">
+  ${pageHead('Listen', `${esc(cfg.showName)} is free in every podcast app.`)}
+  <h2 class="block-h">Pick your podcast app</h2>
+  ${listenButtons(cfg.listen, 'big')}
+  <h2 class="block-h follow-h">Follow along</h2>
+  <ul class="logo-btns big">${cfg.social.map((l) => `<li><a class="logo-btn" href="${esc(l.url)}" rel="noopener me">${icon(iconKey(l))}<span>${esc(l.name)}</span></a></li>`).join('')}</ul>
 </section>
 ${supportBand()}`;
     return layout({
@@ -413,13 +523,35 @@ ${supportBand()}`;
       description: `Where to listen to ${cfg.showName}: ${cfg.listen.map((l) => l.name).join(', ')}.`,
       path: '/listen/',
       body,
+      current: 'listen',
       ld: [seriesLd],
     });
   }
 
+  function search() {
+    const body = `<section class="wrap block narrow-ish">
+  ${pageHead('Search')}
+  <form class="search-big" action="${url('/search/')}" method="get" role="search" aria-label="Search episodes and transcripts" data-search-form>
+    <label class="sr-only" for="q">Search episodes and transcripts</label>
+    ${searchIcon}<input id="q" name="q" type="search" placeholder="Try “tacos”, “Chris Casey” or “earthquake”" autocomplete="off" autofocus><button class="sr-only" type="submit">Search</button>
+  </form>
+  <p class="search-status" data-search-status aria-live="polite">Search every episode title, description, show note and transcript.</p>
+  <ol class="rows search-results" data-search-results></ol>
+</section>
+<script src="${asset('/search.js')}" defer data-base="${base}" data-index="${asset('/search-index.json')}" data-transcripts="${asset('/search-transcripts.json')}"></script>`;
+    return layout({
+      title: `Search | ${cfg.showName}`,
+      description: `Search every episode of ${cfg.showName}, including the transcripts.`,
+      path: '/search/',
+      body,
+      current: 'search',
+      noindex: true,
+    });
+  }
+
   function game() {
-    const body = `<section class="wrap block page-top">
-  <h1 class="paren big">(ONE F)</h1>
+    const body = `<section class="wrap block">
+  ${pageHead('One F', 'A small, pointless game.')}
   <div class="game-cols">
     <div class="game" data-game>
       <canvas tabindex="0" aria-label="One F, a game. Move left and right to catch exactly one falling letter f."></canvas>
@@ -446,14 +578,14 @@ ${supportBand()}`;
       description: `A small, pointless game from ${cfg.showName}. Catch one f. Only one.`,
       path: '/game/',
       body,
+      current: 'game',
     });
   }
 
   function notFound(episodes) {
-    const body = `<section class="wrap block page-top">
-  <h1 class="paren big">(404)</h1>
-  <p class="lede">That page isn't here. The episodes are.</p>
-  <ol class="rows" reversed>${episodes.slice(0, 5).map(row).join('\n')}</ol>
+    const body = `<section class="wrap block">
+  ${pageHead('Page not found', 'That page isn’t here. The episodes are.')}
+  <ol class="rows">${episodes.slice(0, 5).map((e) => row(e, 2)).join('\n')}</ol>
   <p class="more"><a class="btn" href="${url('/episodes/')}">All episodes</a></p>
 </section>`;
     return layout({ title: `Page not found | ${cfg.showName}`, description: 'Page not found.', path: '/404.html', body, noindex: true });
@@ -466,5 +598,5 @@ ${supportBand()}`;
 <body><p><a href="${esc(target)}">Continue to ${esc(target)}</a></p></body></html>`;
   }
 
-  return { home, episodeList, episode, about, listen, game, notFound, redirect, epPath };
+  return { home, episodeList, episode, about, listen, search, game, notFound, redirect, epPath };
 }
