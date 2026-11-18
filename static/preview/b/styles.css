@@ -133,6 +133,17 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 .row { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 1.5rem; padding-block: 1.5rem; border-top: 1px solid var(--line); }
 .row:last-child { border-bottom: 1px solid var(--line); }
 .row-title { font-size: 1.25rem; margin-bottom: 0.45rem; }
+/* The whole row or tile is clickable: the title's link stretches over it. */
+.row, .tile { position: relative; }
+.row-title a::after, .tile-title a::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.row-ex a, .tile-ex a { position: relative; z-index: 2; }
+.row { margin-inline: -0.85rem; padding-inline: 0.85rem; transition: background-color 0.15s; }
+.row:hover { background: var(--panel); border-radius: var(--r); border-color: transparent; }
+.row:hover + .row { border-top-color: transparent; }
+.row:hover .row-title a, .tile:hover .tile-title a { color: var(--accent); }
+.tile:hover .thumb { filter: brightness(1.06); }
+.row-title a:focus-visible { outline: none; }
+.row:has(.row-title a:focus-visible), .tile:has(.tile-title a:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
 .row-title a:hover, .tile-title a:hover, .latest-title a:hover { color: var(--accent); }
 .row-ex { color: var(--soft); margin: 0 0 0.5em; font-size: 1rem; }
 .row-ex:last-child { margin-bottom: 0; }
@@ -250,6 +261,14 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 .pager li span { background: var(--ink); color: var(--bg); }
 
 /* About page */
+.about-sec { padding-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+.about-sec + .support-band { padding-top: clamp(2rem, 4vw, 2.75rem); }
+.about-page { grid-template-columns: minmax(0, 1fr) 17rem; align-items: start; }
+.about-page .block-h { font-size: clamp(1.6rem, 3vw, 2rem); letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+.about-page .lede + .block-h { margin-top: 2.25rem; }
+.about-page .lede, .about-page .prose { font-size: 1.1875rem; line-height: 1.65; max-width: 62ch; }
+.about-page .lede p:last-child, .about-page .prose p:last-child { margin-bottom: 0; }
+.about-page .host-photo { max-width: 17rem; }
 .host-photo { border-radius: var(--r); width: 100%; max-width: 22rem; aspect-ratio: 1; object-fit: cover; margin-bottom: 1.25rem; }
 .contact { margin-bottom: 1.25rem; }
 .contact li { margin-bottom: 0.4rem; }
@@ -341,6 +360,8 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
   .game-side { order: -1; }
   .game-score { display: none; }
   .host-photo { max-width: 14rem; }
+  .about-page { grid-template-columns: minmax(0, 1fr); }
+  .about-page .lede, .about-page .prose { font-size: 1.0625rem; }
 }
 
 @media print {
