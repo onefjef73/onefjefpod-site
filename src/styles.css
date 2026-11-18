@@ -235,8 +235,9 @@ ul.plain { list-style: none; margin: 0; padding: 0; }
 @media (max-width: 46rem) {
   .two, .foot-in { grid-template-columns: minmax(0, 1fr); }
   .row.has-thumb a { grid-template-columns: 6.75rem minmax(0, 1fr); align-items: start; }
-  .card-grid { grid-template-columns: minmax(0, 1fr); }
-  .card-thumb { max-width: 15rem; }
+  .card-grid { display: block; }
+  .card-grid::after { content: ""; display: block; clear: both; }
+  .card-thumb { float: left; width: 6.75rem; margin: 0.3rem 1rem 0.5rem 0; }
   .ep-top.has-thumb { grid-template-columns: minmax(0, 1fr); }
   .ep-top.has-thumb .thumb { max-width: 15rem; }
   .host-photo { max-width: 14rem; }
