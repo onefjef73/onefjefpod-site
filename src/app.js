@@ -2,14 +2,13 @@
 (function () {
   var root = document.documentElement;
 
-  // Theme switch: the site opens in light; a visitor's choice of dark is remembered.
+  // Theme switch: a visitor's choice is remembered.
   var themeBtn = document.querySelector('.theme');
   if (themeBtn) {
     themeBtn.addEventListener('click', function () {
-      var current = root.dataset.theme || 'light';
-      var next = current === 'dark' ? 'light' : 'dark';
+      var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
       root.dataset.theme = next;
-      try { localStorage.setItem('theme', next); } catch (e) { /* private mode */ }
+      try { localStorage.setItem(themeBtn.dataset.themeKey || 'theme', next); } catch (e) { /* private mode */ }
     });
   }
 
@@ -79,7 +78,7 @@
     speedBtn.addEventListener('click', function () {
       speedIdx = (speedIdx + 1) % speeds.length;
       audio.playbackRate = speeds[speedIdx];
-      speedBtn.textContent = speeds[speedIdx] + '×';
+      (speedBtn.querySelector('[data-speed-val]') || speedBtn).textContent = speeds[speedIdx] + '×';
     });
   });
 
@@ -99,8 +98,8 @@
   // Copy link
   document.querySelectorAll('[data-share]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var url = btn.dataset.url, original = btn.textContent;
-      function done(text) { btn.textContent = text; setTimeout(function () { btn.textContent = original; }, 2000); }
+      var url = btn.dataset.url, label = btn.querySelector('[data-share-label]') || btn, original = label.textContent;
+      function done(text) { label.textContent = text; setTimeout(function () { label.textContent = original; }, 2000); }
       if (navigator.share && window.matchMedia('(pointer: coarse)').matches) {
         navigator.share({ title: btn.dataset.title, url: url }).catch(function () {});
       } else if (navigator.clipboard) {
