@@ -1,4 +1,13 @@
 {
   "_help": "Optional extras per episode, keyed by the episode's web address ending (its slug). 'parenthetical' shows a word in parentheses above the title. 'youtube' is a YouTube video ID and adds a video to the page. The entry below is an example and matches no episode.",
-  "example-episode-slug": { "parenthetical": "(EJEMPLO)", "youtube": "" }
+  "example-episode-slug": {
+    "parenthetical": "(EJEMPLO)",
+    "youtube": ""
+  },
+  "a-beer-for-dad-cards-for-grandma": {
+    "youtube": "91oNXms0QFo"
+  },
+  "sex-hugs-mexico-city": {
+    "youtube": "vBBOnuAYK0w"
+  }
 }
