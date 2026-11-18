@@ -237,6 +237,7 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 .ep-title { font-size: clamp(1.75rem, 4vw, 2.5rem); letter-spacing: -0.025em; }
 .ep-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin: 1rem 0 0; }
 .ep-actions .logo-btns { margin: 0; }
+.share-btn { font: inherit; color: var(--ink); cursor: pointer; padding: 0.45rem 0.85rem; font-size: 0.925rem; font-weight: 600; }
 .ep-sec { border-top: 1px solid var(--line); margin-top: 2.5rem; padding-top: 2rem; }
 .sec-h { font-size: 1.375rem; margin-bottom: 1rem; }
 .prose { font-size: 1.0625rem; line-height: 1.65; }
@@ -336,7 +337,6 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
   .brand-name { font-size: 1.4rem; }
   .brand-tag { font-size: 0.78rem; padding-left: 0; border-left: 0; }
   .meta { gap: 0.1rem 0.65rem; font-size: 0.8125rem; }
-  .latest-art { width: 5.25rem; margin-right: 0.85rem; }
   .design-a .latest { padding: 0.95rem; }
   .meta > * { white-space: nowrap; }
   .foot-side { justify-items: start; }
@@ -345,14 +345,25 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
   .with-side { padding-top: 1.25rem; }
   .side { grid-template-columns: minmax(0, 1fr); }
   .side-box:first-child { grid-row: auto; }
-  .side-art { max-width: 10rem; }
-  .latest, .design-b .latest { display: block; }
-  .latest-art { float: left; width: 6.5rem; margin: 0.2rem 1rem 0.6rem 0; }
-  .latest-main { display: block; }
-  .latest-main::after { content: ""; display: block; clear: both; }
-  .latest-title { font-size: 1.45rem; }
-  .design-b .latest-title { font-size: 1.6rem; }
-  .latest-play { clear: both; padding-top: 0.5rem; }
+  .latest, .design-b .latest { display: grid; grid-template-columns: 5.25rem minmax(0, 1fr); column-gap: 0.9rem; row-gap: 0; align-items: start; }
+  .latest-main { display: contents; }
+  .latest-art { grid-column: 1; grid-row: 1 / 3; }
+  .latest-main .meta { grid-column: 2; grid-row: 1; margin-bottom: 0.3rem; }
+  .latest-title { grid-column: 2; grid-row: 2; margin-bottom: 0; font-size: 1.4rem; }
+  .design-b .latest-title { font-size: 1.5rem; }
+  .latest-main > p:not(.meta) { grid-column: 1 / -1; margin: 0.9rem 0 0; }
+  .latest-play { grid-column: 1 / -1; padding-top: 1rem; }
+  /* Fewer episodes on the phone home page: the full list is one tap away. */
+  .is-home .rows .row:nth-child(n+4) { display: none; }
+  .side-art { display: none; }
+  .side .logo-btns.stack { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .side-box { padding: 1.1rem; }
+  .side .logo-btns.stack { gap: 0.5rem; }
+  .side .logo-btns.stack .logo-btn { padding: 0.6rem 0.55rem; font-size: 0.875rem; gap: 0.45rem; white-space: nowrap; }
+  .side .logo-btns.stack .logo-i { width: 19px; height: 19px; }
+  .ep-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+  .ep-actions .logo-btns { display: contents; }
+  .ep-actions .logo-btn { display: flex; width: 100%; justify-content: center; padding: 0.6rem 0.5rem; }
   .row { grid-template-columns: 5.5rem minmax(0, 1fr); gap: 1rem; padding-block: 1.25rem; }
   .row-title { font-size: 1.1rem; }
   .row-ex { font-size: 0.95rem; }
