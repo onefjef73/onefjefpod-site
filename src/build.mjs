@@ -30,6 +30,7 @@ cfg._fingerprints = {};
   const { readdir } = await import('node:fs/promises');
   const mark = async (urlPath, file) => { cfg._fingerprints[urlPath] = createHash('sha1').update(await readFile(file)).digest('hex').slice(0, 8); };
   for (const f of await readdir(path.join(root, 'static/img'))) await mark(`/img/${f}`, path.join(root, 'static/img', f));
+  await mark('/favicon.ico', path.join(root, 'static/favicon.ico'));
   for (const f of ['styles.css', 'app.js', 'game.js', 'search.js']) await mark(`/${f}`, path.join(root, 'src', f));
 }
 // A link that is already a "listen" button or the Patreon button is not repeated among the social links.

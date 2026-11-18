@@ -131,9 +131,10 @@ ${head}
 <meta name="twitter:description" content="${esc(description)}">
 <meta name="twitter:image" content="${esc(img)}">
 <link rel="alternate" type="application/rss+xml" title="${esc(cfg.showName)}" href="${esc(cfg.feedUrl)}">
-<link rel="icon" href="${url('/favicon.ico')}" sizes="48x48">
-<link rel="icon" type="image/png" href="${url('/img/icon-192.png')}" sizes="192x192">
-<link rel="apple-touch-icon" href="${url('/img/apple-touch-icon.png')}">
+<link rel="icon" href="${asset('/favicon.ico')}" sizes="48x48">
+<link rel="icon" type="image/png" href="${asset('/img/favicon.png')}" sizes="32x32">
+<link rel="icon" type="image/png" href="${asset('/img/icon-192.png')}" sizes="192x192">
+<link rel="apple-touch-icon" href="${asset('/img/apple-touch-icon.png')}">
 <link rel="manifest" href="${url('/site.webmanifest')}">
 <link rel="preload" href="${url(design === 'b' ? '/fonts/instrument-sans-latin-wght-normal.woff2' : '/fonts/archivo-latin-wght-normal.woff2')}" as="font" type="font/woff2" crossorigin>
 <meta name="color-scheme" content="light dark">
