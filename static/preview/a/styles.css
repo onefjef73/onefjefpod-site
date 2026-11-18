@@ -80,7 +80,7 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 .brand-name { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.04em; color: var(--accent); }
 .brand-tag { font-size: 0.8rem; color: var(--soft); font-weight: 500; margin-top: 0.15rem; }
 .brand:hover .brand-name { color: var(--ink); }
-.nav { display: flex; gap: 1.5rem; margin-right: auto; }
+.nav { display: flex; gap: 1.6rem; margin-left: auto; margin-right: 0.5rem; }
 .nav a { color: var(--soft); font-weight: 500; padding-block: 0.4rem; border-bottom: 2px solid transparent; }
 .nav a:hover { color: var(--ink); }
 .nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
@@ -322,6 +322,7 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
   .top-search { display: none; }
   .search-link { display: inline-grid; }
   .nav { order: 3; flex-basis: 100%; margin: 0.35rem 0 0; gap: 1.25rem; overflow-x: auto; scrollbar-width: none; }
+  .top-in > .brand { margin-right: auto; }
   .nav a { white-space: nowrap; padding-block: 0.55rem 0.65rem; }
 }
 
