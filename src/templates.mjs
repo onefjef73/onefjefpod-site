@@ -391,8 +391,10 @@ ${supportBand()}`;
     });
   }
 
-  function episode(ep, { newer, older, transcriptHtml, extra }) {
+  function episode(ep, { newer, older, transcriptHtml, extra: extraIn }) {
     const path = epPath(ep);
+    // A video set in content/episodes.json wins; otherwise use the one from Captivate.
+    const extra = { ...(extraIn || {}), youtube: extraIn?.youtube || ep.youtube || '' };
     const video = extra?.youtube ? `<section class="ep-sec" aria-labelledby="watch-h">
     <h2 class="sec-h" id="watch-h">Watch</h2>
     <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${esc(extra.youtube)}" title="${esc(ep.title)}" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
