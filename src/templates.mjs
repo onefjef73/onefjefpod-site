@@ -136,7 +136,9 @@ ${head}
 <link rel="apple-touch-icon" href="${url('/img/apple-touch-icon.png')}">
 <link rel="manifest" href="${url('/site.webmanifest')}">
 <link rel="preload" href="${url(design === 'b' ? '/fonts/instrument-sans-latin-wght-normal.woff2' : '/fonts/archivo-latin-wght-normal.woff2')}" as="font" type="font/woff2" crossorigin>
-<script>(function(){var r=document.documentElement;try{var t=localStorage.getItem('${cfg.themeKey}');if(t==='dark'||t==='light')r.dataset.theme=t}catch(e){}})()</script>
+<meta name="color-scheme" content="light dark">
+<script>(function(){var r=document.documentElement,t=null;try{t=localStorage.getItem('${cfg.themeKey}')}catch(e){}
+if(t!=='dark'&&t!=='light')t=${cfg.followSystemTheme === false ? `'${cfg.defaultTheme}'` : `(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'`};r.dataset.theme=t})()</script>
 <link rel="stylesheet" href="${asset('/styles.css')}">
 ${ld.length ? jsonLd(graph) : ''}
 </head>

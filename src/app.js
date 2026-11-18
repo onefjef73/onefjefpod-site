@@ -2,13 +2,22 @@
 (function () {
   var root = document.documentElement;
 
-  // Theme switch: a visitor's choice is remembered.
+  // Theme switch: a visitor's own choice is remembered and wins over the system setting.
   var themeBtn = document.querySelector('.theme');
+  var themeKey = themeBtn ? themeBtn.dataset.themeKey || 'theme' : 'theme';
+  function savedTheme() { try { return localStorage.getItem(themeKey); } catch (e) { return null; } }
+  // Until a visitor presses the switch, the site follows their phone or computer's
+  // light/dark setting, including when it changes (for example at sunset).
+  if (window.matchMedia) {
+    var mq = matchMedia('(prefers-color-scheme: dark)');
+    var follow = function () { if (!savedTheme()) root.dataset.theme = mq.matches ? 'dark' : 'light'; };
+    if (mq.addEventListener) mq.addEventListener('change', follow); else if (mq.addListener) mq.addListener(follow);
+  }
   if (themeBtn) {
     themeBtn.addEventListener('click', function () {
       var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
       root.dataset.theme = next;
-      try { localStorage.setItem(themeBtn.dataset.themeKey || 'theme', next); } catch (e) { /* private mode */ }
+      try { localStorage.setItem(themeKey, next); } catch (e) { /* private mode */ }
     });
   }
 
