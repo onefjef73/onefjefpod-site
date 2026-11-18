@@ -78,7 +78,7 @@
     speedBtn.addEventListener('click', function () {
       speedIdx = (speedIdx + 1) % speeds.length;
       audio.playbackRate = speeds[speedIdx];
-      speedBtn.textContent = speeds[speedIdx] + '×';
+      (speedBtn.querySelector('[data-speed-val]') || speedBtn).textContent = speeds[speedIdx] + '×';
     });
   });
 
@@ -98,8 +98,8 @@
   // Copy link
   document.querySelectorAll('[data-share]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var url = btn.dataset.url, original = btn.textContent;
-      function done(text) { btn.textContent = text; setTimeout(function () { btn.textContent = original; }, 2000); }
+      var url = btn.dataset.url, label = btn.querySelector('[data-share-label]') || btn, original = label.textContent;
+      function done(text) { label.textContent = text; setTimeout(function () { label.textContent = original; }, 2000); }
       if (navigator.share && window.matchMedia('(pointer: coarse)').matches) {
         navigator.share({ title: btn.dataset.title, url: url }).catch(function () {});
       } else if (navigator.clipboard) {

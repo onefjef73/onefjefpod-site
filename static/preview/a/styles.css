@@ -280,7 +280,7 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 .contact li { margin-bottom: 0.4rem; }
 
 /* Game */
-.game-cols { display: grid; grid-template-columns: minmax(0, 44rem) minmax(0, 1fr); gap: clamp(1.25rem, 3vw, 2.5rem); align-items: start; }
+.game-cols { display: grid; grid-template-columns: minmax(0, 44rem) minmax(14rem, 1fr); gap: clamp(1.25rem, 3vw, 2.5rem); align-items: start; }
 .game-how { margin-bottom: 0.9rem; }
 .game-key { list-style: none; padding: 0; margin: 0 0 1.25rem; display: grid; gap: 0.35rem; }
 .game-key li { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); }
@@ -320,6 +320,8 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
   .top-search input { width: 10rem; }
 }
 @media (max-width: 66rem) {
+  .game-cols { grid-template-columns: minmax(0, 1fr); }
+  .game-side { order: -1; }
   .top-in { flex-wrap: wrap; gap: 0 0.75rem; min-height: 0; padding-top: 0.75rem; }
   .brand { margin-right: auto; }
   .top-search { display: none; }

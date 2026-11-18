@@ -78,7 +78,7 @@
       var ep = h.ep, href = base + '/episode/' + ep.s + '/';
       var meta = [ep.k ? '<span class="kind">' + esc(ep.k) + '</span>' : '', ep.d ? '<span>' + esc(ep.d) + '</span>' : '', ep.m ? '<span>' + ep.m + ' min</span>' : ''].join('');
       return '<li class="row"><a class="row-art" href="' + href + '" tabindex="-1" aria-hidden="true"><img class="thumb" src="' + esc(ep.i) + '" width="480" height="480" alt="" loading="lazy"></a>' +
-        '<div class="row-main"><p class="meta">' + meta + '</p><h3 class="row-title"><a href="' + href + '">' + esc(ep.t) + '</a></h3>' +
+        '<div class="row-main"><p class="meta">' + meta + '</p><h2 class="row-title"><a href="' + href + '">' + esc(ep.t) + '</a></h2>' +
         '<p class="row-ex">' + (h.where || snippet(ep.x, terms(q)) || esc(ep.x)) + '</p></div></li>';
     }).join('');
   }

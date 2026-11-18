@@ -78,7 +78,7 @@
     speedBtn.addEventListener('click', function () {
       speedIdx = (speedIdx + 1) % speeds.length;
       audio.playbackRate = speeds[speedIdx];
-      speedBtn.textContent = speeds[speedIdx] + '×';
+      (speedBtn.querySelector('[data-speed-val]') || speedBtn).textContent = speeds[speedIdx] + '×';
     });
   });
 
