@@ -76,8 +76,10 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 /* Header */
 .top { border-bottom: 1px solid var(--line); background: var(--bg); }
 .top-in { width: min(100% - 2.5rem, var(--w)); margin-inline: auto; display: flex; align-items: center; gap: 1.75rem; min-height: 4.5rem; }
-.brand { display: inline-flex; align-items: center; gap: 0.7rem; font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em; }
-.brand img { border-radius: var(--r-sm); width: 40px; height: 40px; }
+.brand { display: inline-flex; flex-direction: column; line-height: 1.1; }
+.brand-name { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.04em; color: var(--accent); }
+.brand-tag { font-size: 0.8rem; color: var(--soft); font-weight: 500; margin-top: 0.15rem; }
+.brand:hover .brand-name { color: var(--ink); }
 .nav { display: flex; gap: 1.5rem; margin-right: auto; }
 .nav a { color: var(--soft); font-weight: 500; padding-block: 0.4rem; border-bottom: 2px solid transparent; }
 .nav a:hover { color: var(--ink); }
@@ -292,8 +294,13 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 
 /* Footer */
 .foot { border-top: 1px solid var(--line); background: var(--bg); color: var(--soft); font-size: 0.95rem; }
-.foot-in { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 2rem; padding-block: 3rem 2rem; }
-.foot .brand { color: var(--ink); margin-bottom: 0.9rem; }
+.foot-in { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1.5rem 2rem; padding-block: 2.5rem 1.75rem; }
+.foot-side { display: grid; justify-items: end; gap: 0.9rem; }
+.foot-side p { margin: 0; }
+/* The home page sidebar already has these. */
+.is-home .foot-side .social { display: none; }
+.foot-side a:not(.social a) { color: var(--accent); font-weight: 600; }
+.foot .brand { margin-bottom: 0.9rem; }
 .foot-brand p { margin-bottom: 0.35rem; }
 .foot-h { color: var(--ink); font-weight: 600; margin-bottom: 0.75rem; }
 .foot-links li { margin-bottom: 0.5rem; }
@@ -322,15 +329,19 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 @media (max-width: 40rem) {
   body { font-size: 1rem; }
   .wrap, .top-in { width: min(100% - 2rem, var(--w)); }
-  .brand { font-size: 1.15rem; }
-  .brand img { width: 34px; height: 34px; }
+  .brand-name { font-size: 1.35rem; }
+  .brand-tag { font-size: 0.75rem; }
+  .meta { gap: 0.1rem 0.65rem; font-size: 0.8125rem; }
+  .latest-art { width: 5.25rem; margin-right: 0.85rem; }
+  .design-a .latest { padding: 0.95rem; }
+  .meta > * { white-space: nowrap; }
+  .foot-side { justify-items: start; }
   .icon-btn { width: 2.3rem; height: 2.3rem; }
   .nav { justify-content: space-between; gap: 0.75rem; font-size: 0.95rem; }
   .with-side { padding-top: 1.25rem; }
   .side { grid-template-columns: minmax(0, 1fr); }
   .side-box:first-child { grid-row: auto; }
   .side-art { max-width: 10rem; }
-  .design-a .latest { padding: 1.1rem; }
   .latest, .design-b .latest { display: block; }
   .latest-art { float: left; width: 6.5rem; margin: 0.2rem 1rem 0.6rem 0; }
   .latest-main { display: block; }
@@ -347,7 +358,8 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
   .tile-art { grid-row: 1 / 6; margin: 0; }
   .tile-title { font-size: 1.1rem; }
   .tile-ex { font-size: 0.95rem; }
-  .about-grid, .foot-in { grid-template-columns: minmax(0, 1fr); }
+  .about-grid { grid-template-columns: minmax(0, 1fr); }
+  .foot-in { flex-direction: column; }
   .block-head { flex-wrap: wrap; }
   .ep-head { grid-template-columns: 6.5rem minmax(0, 1fr); gap: 1rem; align-items: center; }
   .ep-title { font-size: 1.55rem; }
