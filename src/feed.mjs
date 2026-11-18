@@ -13,7 +13,7 @@ const parser = new XMLParser({
   // The parser's default entity limits are too low for a feed that carries
   // a full back catalogue of show notes; they are raised, not removed.
   processEntities: { maxTotalExpansions: 5_000_000, maxExpandedLength: 50_000_000 },
-  isArray: (name) => ['item', 'podcast:transcript', 'podcast:person', 'itunes:category'].includes(name),
+  isArray: (name) => ['item', 'podcast:transcript', 'podcast:person', 'itunes:category', 'podcast:alternateEnclosure', 'podcast:source'].includes(name),
 });
 
 export async function loadText(url) {
@@ -107,6 +107,19 @@ function slugFromLink(link) {
   return '';
 }
 
+// The YouTube video ID from an episode's alternate enclosures, if it has one.
+function youtubeId(encs) {
+  for (const e of encs || []) {
+    const isVideo = /youtube|video/i.test(e['@type'] || '');
+    for (const src of e['podcast:source'] || []) {
+      const u = src['@uri'] || '';
+      const m = u.match(/(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/))([A-Za-z0-9_-]{11})/);
+      if (m && (isVideo || /youtu/.test(u))) return m[1];
+    }
+  }
+  return '';
+}
+
 export async function loadFeed(url) {
   const xml = await loadText(url);
   const doc = parser.parse(xml);
@@ -154,6 +167,8 @@ export async function loadFeed(url) {
       summary,
       excerpt: excerpt(summary),
       lead: leadText(notesHtml, excerpt(summary, 600)),
+      // A YouTube video added to the episode in Captivate arrives as an "alternate enclosure".
+      youtube: youtubeId(it['podcast:alternateEnclosure']),
       transcripts: (it['podcast:transcript'] || [])
         .map((t) => ({ url: t['@url'], type: (t['@type'] || '').toLowerCase() }))
         .filter((t) => t.url),

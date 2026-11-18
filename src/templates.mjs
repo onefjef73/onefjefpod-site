@@ -280,8 +280,10 @@ ${supportBand()}`;
     });
   }
 
-  function episode(ep, { newer, older, transcriptHtml, extra }) {
+  function episode(ep, { newer, older, transcriptHtml, extra: extraIn }) {
     const path = epPath(ep);
+    // A video set in content/episodes.json wins; otherwise use the one from Captivate.
+    const extra = { ...(extraIn || {}), youtube: extraIn?.youtube || ep.youtube || '' };
     const paren = extra?.parenthetical ? `<p class="ep-paren">${esc(extra.parenthetical)}</p>` : '';
     const video = extra?.youtube ? `<section class="ep-sec" aria-labelledby="watch-h">
     <h2 class="paren" id="watch-h">${esc(L.watch)}</h2>
