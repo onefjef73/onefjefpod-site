@@ -262,14 +262,33 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 .ep-nav strong { font-weight: 600; }
 .ep-nav .next { text-align: right; }
 
-/* Embed code on episode pages */
-.embed-box { margin-top: 1.25rem; font-size: 0.95rem; }
-.embed-box summary { cursor: pointer; color: var(--accent); font-weight: 600; width: fit-content; }
-.embed-box[open] summary { margin-bottom: 0.75rem; }
-.embed-box p { color: var(--soft); }
-.embed-box textarea { width: 100%; font: 0.85rem/1.45 ui-monospace, Menlo, Consolas, monospace; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 0.7rem 0.8rem; resize: none; margin-bottom: 0.6rem; }
-.embed-preview-h { margin: 1.25rem 0 0.5rem; font-weight: 600; color: var(--ink) !important; }
-.embed-preview { width: 100%; max-width: 680px; border: 0; border-radius: 12px; display: block; }
+/* Share or embed dialog */
+.share-dialog { width: min(100% - 2rem, 42rem); max-height: calc(100vh - 2rem); padding: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--bg); color: var(--ink); box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.45); overflow: auto; }
+.share-dialog::backdrop { background: rgba(0, 0, 0, 0.5); }
+.sd-head { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--line); }
+.sd-head h2 { font-size: 1.25rem; }
+.sd-close { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border: 0; border-radius: 999px; background: transparent; color: var(--soft); }
+.sd-close:hover { background: var(--panel); color: var(--ink); }
+.sd-sec { padding: 1.25rem 1.4rem 1.4rem; }
+.sd-sec + .sd-sec { border-top: 1px solid var(--line); }
+.sd-h { font-size: 0.95rem; margin-bottom: 0.75rem; }
+.sd-field { display: flex; gap: 0.5rem; }
+.sd-field input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: var(--r-sm); padding: 0.65rem 0.8rem; font-size: 0.95rem; text-overflow: ellipsis; }
+.sd-field input:focus { outline: none; border-color: var(--ink); }
+.sd-field .sd-code { font: 0.85rem ui-monospace, Menlo, Consolas, monospace; }
+.sd-copy { flex: none; min-width: 7.5rem; justify-content: center; }
+.sd-native { margin-top: 0.75rem; }
+.sd-preview { display: block; width: 100%; border: 0; border-radius: 12px; margin-bottom: 0.9rem; }
+.sd-options { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 1.1rem; margin-bottom: 0.9rem; font-size: 0.925rem; }
+.sd-opt-label { color: var(--soft); }
+.sd-options label { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
+.sd-options input { accent-color: var(--btn); margin: 0; }
+.sd-note { margin: 0.75rem 0 0; color: var(--soft); font-size: 0.875rem; }
+@media (max-width: 40rem) {
+  .share-dialog { width: 100%; max-width: none; max-height: 92vh; margin: auto 0 0; border-radius: 16px 16px 0 0; border-bottom: 0; }
+  .sd-head, .sd-sec { padding-inline: 1rem; }
+  .sd-copy { min-width: 6.25rem; }
+}
 
 /* The embedded player itself (shown inside other sites) */
 .embed-page { background: transparent; margin: 0; overflow: hidden; font-size: 1rem; }

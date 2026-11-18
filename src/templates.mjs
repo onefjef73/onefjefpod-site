@@ -414,16 +414,37 @@ ${supportBand()}`;
   ${player(ep)}
   <div class="ep-actions">
     ${listenButtons(cfg.listen.filter((l) => !/rss/i.test(l.name)), 'small')}
-    <button class="logo-btn share-btn" type="button" data-share data-url="${esc(abs(path))}" data-title="${esc(ep.title)}"><svg class="logo-i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M10.6 13.4a4 4 0 0 0 5.66 0l3.18-3.18a4 4 0 0 0-5.66-5.66l-1.1 1.1M13.4 10.6a4 4 0 0 0-5.66 0l-3.18 3.18a4 4 0 0 0 5.66 5.66l1.1-1.1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span data-share-label>Copy link</span></button>
+    <button class="logo-btn share-btn" type="button" data-share-open aria-haspopup="dialog" aria-controls="share-dialog"><svg class="logo-i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Share or embed</span></button>
   </div>
-  <details class="embed-box">
-    <summary>Embed this episode on another site</summary>
-    <p>Paste this code into any site that lets you add HTML, such as a WordPress "Custom HTML" block or a Squarespace "Code" block. It shows a small player that plays the episode right there.</p>
-    <textarea readonly rows="3" aria-label="Embed code" data-embed-code>${esc(embedCode(ep))}</textarea>
-    <button class="btn small" type="button" data-copy-embed>Copy embed code</button>
-    <p class="embed-preview-h">Preview</p>
-    <iframe class="embed-preview" src="${url(`/embed/${ep.slug}/`)}" title="Preview of the embedded player" height="168" loading="lazy"></iframe>
-  </details>
+  <dialog class="share-dialog" id="share-dialog" aria-labelledby="share-h">
+    <div class="sd-head">
+      <h2 id="share-h">Share this episode</h2>
+      <button class="sd-close" type="button" data-share-close aria-label="Close"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+    </div>
+    <section class="sd-sec">
+      <h3 class="sd-h">Link</h3>
+      <div class="sd-field">
+        <input type="text" readonly value="${esc(abs(path))}" aria-label="Episode link" data-share-link>
+        <button class="btn btn-solid sd-copy" type="button" data-copy="link">Copy link</button>
+      </div>
+      <button class="btn small sd-native" type="button" data-native-share data-title="${esc(ep.title)}" data-url="${esc(abs(path))}" hidden>More ways to share</button>
+    </section>
+    <section class="sd-sec">
+      <h3 class="sd-h">Embed a player on your website</h3>
+      <iframe class="sd-preview" src="${url(`/embed/${ep.slug}/`)}" title="Preview of the embedded player" height="168" loading="lazy" data-embed-preview></iframe>
+      <div class="sd-options" role="radiogroup" aria-label="Player colors">
+        <span class="sd-opt-label">Colors</span>
+        <label><input type="radio" name="emtheme" value="" checked data-embed-theme> Match the visitor</label>
+        <label><input type="radio" name="emtheme" value="light" data-embed-theme> Light</label>
+        <label><input type="radio" name="emtheme" value="dark" data-embed-theme> Dark</label>
+      </div>
+      <div class="sd-field">
+        <input type="text" readonly value="${esc(embedCode(ep))}" aria-label="Embed code" class="sd-code" data-embed-code data-embed-src="${esc(abs(`/embed/${ep.slug}/`))}">
+        <button class="btn btn-solid sd-copy" type="button" data-copy="code">Copy code</button>
+      </div>
+      <p class="sd-note">Paste it anywhere that accepts HTML, like a WordPress "Custom HTML" block or a Squarespace "Code" block.</p>
+    </section>
+  </dialog>
   ${video}
   <section class="ep-sec" aria-labelledby="notes-h">
     <h2 class="sec-h" id="notes-h">Show notes</h2>
@@ -508,14 +529,14 @@ ${supportBand()}`;
 <link rel="stylesheet" href="${asset('/styles.css')}">
 </head>
 <body class="embed-page">
-<div class="em">
+<main class="em">
   <a class="em-art" href="${esc(epUrl)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="${esc(art)}" width="480" height="480" alt=""></a>
   <div class="em-main">
     <p class="em-top"><a class="em-show" href="${esc(abs('/'))}" target="_blank" rel="noopener">${esc(cfg.showName)}</a><span>${latest ? 'Latest episode' : epKind(ep)}</span>${ep.seconds ? `<span>${fmtDuration(ep.seconds)}</span>` : ''}</p>
-    <p class="em-title"><a href="${esc(epUrl)}" target="_blank" rel="noopener">${esc(ep.title)}</a></p>
+    <h1 class="em-title"><a href="${esc(epUrl)}" target="_blank" rel="noopener">${esc(ep.title)}</a></h1>
     ${player(ep)}
   </div>
-</div>
+</main>
 <script src="${asset('/app.js')}" defer></script>
 </body>
 </html>
