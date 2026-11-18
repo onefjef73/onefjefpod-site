@@ -63,6 +63,7 @@ button { cursor: pointer; }
 h1, h2, h3 { margin: 0; font-weight: 700; line-height: 1.15; letter-spacing: -0.015em; }
 p { margin: 0 0 1em; }
 ul.plain { list-style: none; margin: 0; padding: 0; }
+.nowrap { white-space: nowrap; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .skip { position: absolute; left: -999px; top: 0; background: var(--btn); color: var(--on-btn); padding: 0.6rem 1rem; z-index: 20; font-weight: 600; }
 .skip:focus { left: 0; }
@@ -241,6 +242,9 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 .ep-sec { border-top: 1px solid var(--line); margin-top: 2.5rem; padding-top: 2rem; }
 .sec-h { font-size: 1.375rem; margin-bottom: 1rem; }
 .prose { font-size: 1.0625rem; line-height: 1.65; }
+/* Avoid a single word left alone on the last line (Chrome 117+, Safari 26+). */
+.prose p, .lede p, .row-ex, .tile-ex, .latest-main p, .side-desc p, .support p { text-wrap: pretty; }
+.prose .credit { white-space: nowrap; font-size: min(1em, calc((100vw - 2rem) / 24.3)); }
 .prose h2, .prose h3, .prose h4 { font-size: 1.15rem; margin: 1.6em 0 0.5em; }
 .prose ul, .prose ol { padding-left: 1.3rem; }
 .prose li { margin-bottom: 0.35em; }
