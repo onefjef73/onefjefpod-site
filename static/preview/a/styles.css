@@ -250,6 +250,14 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 .pager li span { background: var(--ink); color: var(--bg); }
 
 /* About page */
+.about-sec { padding-bottom: clamp(1.5rem, 3vw, 2.25rem); }
+.about-sec + .support-band { padding-top: clamp(2rem, 4vw, 2.75rem); }
+.about-page { grid-template-columns: minmax(0, 1fr) 17rem; align-items: start; }
+.about-page .block-h { font-size: clamp(1.6rem, 3vw, 2rem); letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+.about-page .lede + .block-h { margin-top: 2.25rem; }
+.about-page .lede, .about-page .prose { font-size: 1.1875rem; line-height: 1.65; max-width: 62ch; }
+.about-page .lede p:last-child, .about-page .prose p:last-child { margin-bottom: 0; }
+.about-page .host-photo { max-width: 17rem; }
 .host-photo { border-radius: var(--r); width: 100%; max-width: 22rem; aspect-ratio: 1; object-fit: cover; margin-bottom: 1.25rem; }
 .contact { margin-bottom: 1.25rem; }
 .contact li { margin-bottom: 0.4rem; }
@@ -341,6 +349,8 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
   .game-side { order: -1; }
   .game-score { display: none; }
   .host-photo { max-width: 14rem; }
+  .about-page { grid-template-columns: minmax(0, 1fr); }
+  .about-page .lede, .about-page .prose { font-size: 1.0625rem; }
 }
 
 @media print {
