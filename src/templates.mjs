@@ -416,6 +416,14 @@ ${supportBand()}`;
     ${listenButtons(cfg.listen.filter((l) => !/rss/i.test(l.name)), 'small')}
     <button class="logo-btn share-btn" type="button" data-share data-url="${esc(abs(path))}" data-title="${esc(ep.title)}"><svg class="logo-i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M10.6 13.4a4 4 0 0 0 5.66 0l3.18-3.18a4 4 0 0 0-5.66-5.66l-1.1 1.1M13.4 10.6a4 4 0 0 0-5.66 0l-3.18 3.18a4 4 0 0 0 5.66 5.66l1.1-1.1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><span data-share-label>Copy link</span></button>
   </div>
+  <details class="embed-box">
+    <summary>Embed this episode on another site</summary>
+    <p>Paste this code into any site that lets you add HTML, such as a WordPress "Custom HTML" block or a Squarespace "Code" block. It shows a small player that plays the episode right there.</p>
+    <textarea readonly rows="3" aria-label="Embed code" data-embed-code>${esc(embedCode(ep))}</textarea>
+    <button class="btn small" type="button" data-copy-embed>Copy embed code</button>
+    <p class="embed-preview-h">Preview</p>
+    <iframe class="embed-preview" src="${url(`/embed/${ep.slug}/`)}" title="Preview of the embedded player" height="168" loading="lazy"></iframe>
+  </details>
   ${video}
   <section class="ep-sec" aria-labelledby="notes-h">
     <h2 class="sec-h" id="notes-h">Show notes</h2>
@@ -444,6 +452,8 @@ ${supportBand()}`;
       current: 'episodes',
       head: [
         ep.date ? `<meta property="article:published_time" content="${isoDate(ep.date)}">` : '',
+        `<meta property="og:image:alt" content="${esc(`Artwork for ${ep.title}, an episode of ${cfg.showName}`)}">`,
+        `<link rel="alternate" type="application/json+oembed" href="${esc(abs(`/embed/${ep.slug}/oembed.json`))}" title="${esc(ep.title)}">`,
         ep.audio ? `<meta property="og:audio" content="${esc(ep.audio)}">\n<meta property="og:audio:type" content="${esc(ep.audioType)}">` : '',
       ].filter(Boolean).join('\n'),
       ld: [
@@ -473,6 +483,50 @@ ${supportBand()}`;
           { '@type': 'ListItem', position: 3, name: ep.title, item: abs(path) },
         ] },
       ],
+    });
+  }
+
+  // The code someone pastes into another site to show a player for one episode.
+  function embedCode(ep, slug = ep.slug) {
+    return `<iframe src="${abs(`/embed/${slug}/`)}" title="${cfg.showName}: ${ep.title.replace(/"/g, '&quot;')}" width="100%" height="168" style="border:0;border-radius:12px;max-width:680px" loading="lazy" allow="autoplay"></iframe>`;
+  }
+
+  // A small, self-contained player page that other sites show in an iframe.
+  function embed(ep, { latest = false } = {}) {
+    const epUrl = abs(epPath(ep));
+    const art = ep.thumb ? (ep.thumb.startsWith('/') ? url(ep.thumb) : ep.thumb) : showArt;
+    return `<!doctype html>
+<html lang="${esc(cfg.language)}" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(ep.title)} | ${esc(cfg.showName)}</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="${esc(epUrl)}">
+<meta name="color-scheme" content="light dark">
+<script>(function(){var r=document.documentElement,q=new URLSearchParams(location.search).get('theme');r.dataset.theme=(q==='dark'||q==='light')?q:((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light')})()</script>
+<link rel="stylesheet" href="${asset('/styles.css')}">
+</head>
+<body class="embed-page">
+<div class="em">
+  <a class="em-art" href="${esc(epUrl)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="${esc(art)}" width="480" height="480" alt=""></a>
+  <div class="em-main">
+    <p class="em-top"><a class="em-show" href="${esc(abs('/'))}" target="_blank" rel="noopener">${esc(cfg.showName)}</a><span>${latest ? 'Latest episode' : epKind(ep)}</span>${ep.seconds ? `<span>${fmtDuration(ep.seconds)}</span>` : ''}</p>
+    <p class="em-title"><a href="${esc(epUrl)}" target="_blank" rel="noopener">${esc(ep.title)}</a></p>
+    ${player(ep)}
+  </div>
+</div>
+<script src="${asset('/app.js')}" defer></script>
+</body>
+</html>
+`;
+  }
+
+  function oembed(ep) {
+    return JSON.stringify({
+      version: '1.0', type: 'rich', provider_name: cfg.showName, provider_url: abs('/'),
+      title: ep.title, author_name: cfg.host.name, author_url: abs('/about/'),
+      thumbnail_url: ep.image || abs('/img/logo.jpg'), html: embedCode(ep), width: 680, height: 168,
     });
   }
 
@@ -601,5 +655,5 @@ ${supportBand()}`;
 <body><p><a href="${esc(target)}">Continue to ${esc(target)}</a></p></body></html>`;
   }
 
-  return { home, episodeList, episode, about, listen, search, game, notFound, redirect, epPath };
+  return { home, episodeList, episode, embed, oembed, about, listen, search, game, notFound, redirect, epPath };
 }

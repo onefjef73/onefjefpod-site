@@ -104,6 +104,16 @@
     });
   });
 
+  // Copy embed code
+  document.querySelectorAll('[data-copy-embed]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var box = btn.parentNode.querySelector('[data-embed-code]'), original = btn.textContent;
+      function done(text) { btn.textContent = text; setTimeout(function () { btn.textContent = original; }, 2000); }
+      if (navigator.clipboard) navigator.clipboard.writeText(box.value).then(function () { done('Copied'); }, function () { box.select(); done('Press Cmd+C to copy'); });
+      else { box.select(); done('Press Cmd+C to copy'); }
+    });
+  });
+
   // Copy link
   document.querySelectorAll('[data-share]').forEach(function (btn) {
     btn.addEventListener('click', function () {

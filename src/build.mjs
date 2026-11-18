@@ -90,6 +90,8 @@ for (let p = 1; p <= pageCount; p++) {
   const slice = episodes.slice((p - 1) * perPage, p * perPage);
   await write(p === 1 ? '/episodes/' : `/episodes/${p}/`, t.episodeList(slice, p, pageCount), { lastmod: newest });
 }
+// A player for whatever the newest episode is, for sites that want to always show the latest.
+await write('/embed/latest/', t.embed(episodes[0], { latest: true }), { index: false });
 // The old site called page one /episodes/1
 await write('/episodes/1/', t.redirect(`${cfg.siteUrl}/episodes/`), { index: false });
 // The old site listed five episodes per page, so it had more pages than this one.
@@ -109,6 +111,8 @@ async function worker() {
     await write(t.epPath(ep), t.episode(ep, {
       newer: episodes[i - 1], older: episodes[i + 1], transcriptHtml, extra: extras[ep.slug],
     }), { lastmod: ep.date });
+    await write(`/embed/${ep.slug}/`, t.embed(ep), { index: false });
+    await write(`/embed/${ep.slug}/oembed.json`, t.oembed(ep), { index: false });
   }
 }
 await Promise.all(Array.from({ length: 6 }, worker));
