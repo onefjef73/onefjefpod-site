@@ -170,6 +170,7 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 .p-err { margin: 0.4rem 0 0; font-size: 0.85rem; color: var(--accent); }
 
 /* Latest episode */
+.latest-head { margin-bottom: 1rem; }
 .latest { display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: 1.25rem 1.75rem; align-items: start; }
 .latest-title { font-size: clamp(1.6rem, 3vw, 2.1rem); letter-spacing: -0.025em; margin-bottom: 0.75rem; }
 .latest-main p:not(.meta) { color: var(--soft); }
