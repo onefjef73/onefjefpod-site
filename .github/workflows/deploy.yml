@@ -1,5 +1,5 @@
 # Rebuilds and publishes the site:
-#   - every hour (picks up new episodes from the Captivate feed)
+#   - every 15 minutes (picks up new episodes from the Captivate feed)
 #   - whenever you change a file in this repository
 #   - whenever you press "Run workflow" on the Actions tab
 name: Build and publish site
