@@ -6,7 +6,9 @@ name: Build and publish site
 
 on:
   schedule:
-    - cron: "17 * * * *"
+    # Every 15 minutes, off the hour. GitHub sometimes delays or skips scheduled
+    # runs when it is busy, so checking often means a skipped one costs minutes, not hours.
+    - cron: "7,22,37,52 * * * *"
   push:
     branches: [main]
   workflow_dispatch:
