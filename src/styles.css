@@ -214,7 +214,7 @@ mark { background: var(--mark); color: inherit; padding: 0 0.1em; border-radius:
 .review figcaption a:hover { color: var(--ink); }
 
 /* Be on the show */
-.guest p { color: var(--soft); font-size: 0.975rem; margin-bottom: 0.6rem; }
+.guest p { color: var(--soft); font-size: 0.975rem; margin-bottom: 0.6rem; text-wrap: pretty; }
 .guest .guest-line { margin-bottom: 0.9rem; }
 .guest .guest-line:last-child { margin-bottom: 0; }
 .guest .btn { background: var(--bg); color: var(--ink); }
