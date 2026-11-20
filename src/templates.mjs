@@ -268,7 +268,7 @@ ${body}
   </div>
 </article>`;
 
-  const stars = (n) => `<span class="stars" aria-label="${n} out of 5 stars">${'★'.repeat(n)}</span>`;
+  const stars = (n) => `<span class="stars" role="img" aria-label="${n} out of 5 stars">${'★'.repeat(n)}</span>`;
   const appleReviews = cfg.listen.find((l) => /apple/i.test(l.name))?.url;
   // Real listener reviews, quoted exactly; edit the list in site.config.json.
   const reviewsBox = (cls = '') => cfg.reviews?.length ? `<section class="reviews ${cls}" aria-labelledby="reviews-h">
