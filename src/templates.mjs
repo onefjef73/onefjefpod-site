@@ -183,6 +183,7 @@ ${body}
     <div class="foot-side">
       ${socialIcons()}
       <p><a href="${url('/listen/')}">All the ways to listen</a></p>
+      ${cfg.guest ? `<p><a href="${url('/about/#be-on-the-show')}">${esc(cfg.guest.heading)}</a></p>` : ''}
     </div>
   </div>
   <p class="wrap foot-legal">© ${cfg.copyrightStartYear && cfg.copyrightStartYear < new Date().getFullYear() ? `${cfg.copyrightStartYear} - ` : ''}${new Date().getFullYear()} ${esc((cfg.copyright || show.copyright || cfg.host.name).replace(/^(copyright|©|\(c\))\s*(\d{4})?\s*/i, ''))}</p>
@@ -267,6 +268,25 @@ ${body}
   </div>
 </article>`;
 
+  const stars = (n) => `<span class="stars" aria-label="${n} out of 5 stars">${'★'.repeat(n)}</span>`;
+  const appleReviews = cfg.listen.find((l) => /apple/i.test(l.name))?.url;
+  // Real listener reviews, quoted exactly; edit the list in site.config.json.
+  const reviewsBox = (cls = '') => cfg.reviews?.length ? `<section class="reviews ${cls}" aria-labelledby="reviews-h">
+    <h2 class="side-h" id="reviews-h">What listeners say</h2>
+    ${cfg.reviews.map((r) => `<figure class="review">
+      ${stars(r.stars || 5)}
+      <blockquote><p>“${esc(r.quote)}”</p></blockquote>
+      <figcaption>${esc(r.name)}, ${appleReviews && /apple/i.test(r.source) ? `<a href="${esc(appleReviews)}" rel="noopener">${esc(r.source)}</a>` : esc(r.source)}</figcaption>
+    </figure>`).join('')}
+  </section>` : '';
+  // "Be on the show": how to pitch a story or leave a voicemail.
+  const guestBox = (cls = '', headingTag = 'h2', headingCls = 'side-h') => cfg.guest ? `<section class="guest ${cls}" id="be-on-the-show" aria-labelledby="guest-h">
+    <${headingTag} class="${headingCls}" id="guest-h">${esc(cfg.guest.heading)}</${headingTag}>
+    <p>${esc(cfg.guest.pitch)}</p>
+    ${cfg.contact?.email ? `<p class="guest-line"><a class="btn small" href="mailto:${esc(cfg.contact.email)}?subject=${encodeURIComponent('Be on the show')}"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>${esc(cfg.contact.email)}</a></p>` : ''}
+    ${cfg.contact?.voicemail ? `<p>${esc(cfg.guest.voicemail)}</p><p class="guest-line"><a class="btn small" href="tel:+${esc(cfg.contact.voicemail.replace(/\D/g, ''))}"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" fill="currentColor"/></svg>${esc(cfg.contact.voicemail).replace(/-/g, '\u2011')}</a></p>` : ''}
+  </section>` : '';
+
   const sideAbout = () => `<aside class="side">
   <section class="side-box">
     <img class="side-art" src="${showArt}" width="600" height="600" alt="${esc(cfg.showName)} ${esc(cfg.parenthetical)} artwork" loading="lazy">
@@ -277,6 +297,7 @@ ${body}
       <span>Hosted by <strong>${esc(cfg.host.name)}</strong></span>
     </a>
   </section>
+  ${reviewsBox('side-box')}
   <section class="side-box">
     <h2 class="side-h">Listen for free</h2>
     ${listenButtons(cfg.listen, 'stack')}
@@ -285,6 +306,7 @@ ${body}
     <h2 class="side-h">Follow</h2>
     ${socialIcons()}
   </section>
+  ${guestBox('side-box')}
   ${supportBox('side-box')}
 </aside>`;
 
@@ -301,7 +323,7 @@ ${body}
 <section class="wrap block" aria-labelledby="recent-h">
   <div class="block-head">
     <h2 class="block-h" id="recent-h">Recent episodes</h2>
-    <a class="block-link" href="${url('/episodes/')}">All ${episodes.length} episodes</a>
+    <a class="block-link" href="${url('/episodes/')}">All episodes</a>
   </div>
   <ol class="tiles">${episodes.slice(1, 1 + count).map((e) => tile(e)).join('\n')}</ol>
 </section>
@@ -332,10 +354,10 @@ ${supportBand()}`;
     <section class="block" aria-labelledby="recent-h">
       <div class="block-head">
         <h2 class="block-h" id="recent-h">More episodes</h2>
-        <a class="block-link" href="${url('/episodes/')}">All ${episodes.length} episodes</a>
+        <a class="block-link" href="${url('/episodes/')}">All episodes</a>
       </div>
       <ol class="rows">${episodes.slice(1, 1 + count).map((e) => row(e)).join('\n')}</ol>
-      <p class="more"><a class="btn" href="${url('/episodes/')}">See all ${episodes.length} episodes</a></p>
+      <p class="more"><a class="btn" href="${url('/episodes/')}">See all episodes</a></p>
     </section>
   </div>
   ${sideAbout()}
@@ -560,6 +582,7 @@ ${supportBand()}`;
       <div class="lede">${show.descriptionHtml || `<p>${esc(cfg.tagline)}</p>`}</div>
       <h2 class="block-h">${esc(cfg.host.name)}</h2>
       <div class="prose">${aboutHtml}</div>
+      ${guestBox('about-guest', 'h2', 'block-h')}
     </div>
     <aside>
       ${cfg.host.photo ? `<img class="host-photo" src="${esc(hostPhoto)}" alt="${esc(cfg.host.name)}" width="480" height="480" loading="lazy">` : ''}
