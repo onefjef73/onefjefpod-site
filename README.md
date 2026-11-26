@@ -9,6 +9,7 @@ show notes, transcript, audio player, and a place in the episode list and sitema
 | To change | Edit |
 |---|---|
 | Links, tagline, Patreon text, copyright name, section labels, episodes per page | `site.config.json` |
+| The "Start here" episodes on the home page (episode numbers, in the order shown) | `startHere` in `site.config.json` |
 | Your bio on the About page | `content/about.md` |
 | Your photo | replace `static/img/host.webp` |
 | A word in parentheses above an episode title, or a video on an episode page | `content/episodes.json` |

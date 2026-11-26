@@ -313,6 +313,15 @@ ${body}
   function home(episodes) {
     const latest = episodes[0];
     const count = cfg.homeEpisodeCount;
+    // "Start here": episodes for new listeners, by episode number, in the order listed
+    // under startHere in site.config.json. A number the feed doesn't have is skipped.
+    const startEps = (cfg.startHere || []).map((n) => episodes.find((e) => e.number === Number(n))).filter(Boolean);
+    const startHere = (item, list) => startEps.length ? `<section class="block start-here" aria-labelledby="start-h">
+  <div class="block-head">
+    <h2 class="block-h" id="start-h">Start here</h2>
+  </div>
+  <ol class="${list}">${startEps.map((e) => item(e)).join('\n')}</ol>
+</section>` : '';
     const h1 = `<h1 class="sr-only">${esc(cfg.showName)}: ${esc(cfg.tagline)}</h1>`;
     let body;
     if (design === 'b') {
@@ -320,6 +329,7 @@ ${body}
 <section class="feature">
   <div class="wrap">${latest ? latestBlock(latest) : ''}</div>
 </section>
+${startEps.length ? `<div class="wrap">${startHere(tile, 'tiles')}</div>` : ''}
 <section class="wrap block" aria-labelledby="recent-h">
   <div class="block-head">
     <h2 class="block-h" id="recent-h">Recent episodes</h2>
@@ -351,6 +361,7 @@ ${supportBand()}`;
 <div class="wrap with-side">
   <div class="main-col">
     ${latest ? latestBlock(latest) : ''}
+    ${startHere(row, 'rows')}
     <section class="block" aria-labelledby="recent-h">
       <div class="block-head">
         <h2 class="block-h" id="recent-h">More episodes</h2>
