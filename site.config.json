@@ -8,7 +8,11 @@
   "timeZone": "America/Mexico_City",
   "episodesPerPage": 10,
   "homeEpisodeCount": 6,
-  "startHere": [58, 66, 62],
+  "startHere": [
+    58,
+    66,
+    62
+  ],
   "host": {
     "name": "Jef Taylor",
     "photo": "/img/host.webp",
@@ -22,6 +26,10 @@
     {
       "name": "Spotify",
       "url": "https://open.spotify.com/show/2kJRynBFcxJTOkOhAzzgZD"
+    },
+    {
+      "name": "Pocket Casts",
+      "url": "https://pocketcasts.com/podcast/onefjef/d99585d0-26bd-013e-1bd3-0acc26574db2"
     },
     {
       "name": "YouTube",
