@@ -1,0 +1,22 @@
+{
+  "_help": "Old web addresses that should forward to their current page. Keys are old paths, values are new paths. These came from the old Captivate site: episodes that were renamed got new addresses, and Google still knows the old ones.",
+  "/episode/boom-bing-bang/": "/episode/mexican-milk-cartons-other-small-confusions/",
+  "/episode/dumb-gringo/": "/episode/earthquake-alarms-sinking-sidewalks-in-mexico-city/",
+  "/episode/filmmaking-insights-success-challenges-with-alex-mallis/": "/episode/friendship-filmmaking-the-travel-companion-with-alex-mallis/",
+  "/episode/free-tequila/": "/episode/antibiotics-a-tip-jar-doctor-free-tequila-in-cdmx/",
+  "/episode/gary-clarke/": "/episode/biking-the-entire-western-hemisphere/",
+  "/episode/la-noche-es-femenina/": "/episode/the-simpsons-in-spanish-a-bungee-fitness-class/",
+  "/episode/road-trip-part-1-gateway-arch-mega-crosses-my-sundance-origin-story/": "/episode/gateway-arch-mega-crosses-my-sundance-origin-story-road-trip-part-1/",
+  "/episode/road-trip-part-2-wyoming-devils-tower-getting-lost-in-a-reno-casino/": "/episode/wyoming-devils-tower-getting-lost-in-a-reno-casino-road-trip-part-2/",
+  "/episode/road-trip-part-3-off-the-grid-camping-talking-to-teenagers-floating-on-wrights-lake/": "/episode/off-the-grid-camping-talking-to-teenagers-floating-on-wrights-lake-road-trip-part-3/",
+  "/episode/road-trip-part-4-friendship-forgetting-getting-lost-in-the-fog-in-muir-woods/": "/episode/friendship-forgetting-getting-lost-in-the-fog-in-muir-woods-road-trip-part-4/",
+  "/episode/road-trip-part-5-bogota-traffic-north-korean-bibimbap-patricia/": "/episode/bogota-traffic-north-korean-bibimbap-trying-coca-leaves-road-trip-part-5/",
+  "/episode/road-trip-part-6-interstate-666-meow-wolf-death-in-vegas/": "/episode/interstate-666-meow-wolf-death-in-vegas-road-trip-part-6/",
+  "/episode/road-trip-part-7-stuck-on-route-66-a-visit-to-uranus-the-jesus-store-in-branson/": "/episode/stuck-on-route-66-a-visit-to-uranus-the-jesus-store-in-branson-road-trip-part-7/",
+  "/episode/sex-death-politics-connection-on-chris-ryans-podcast/": "/episode/sex-death-politics-connection-with-chris-ryan/",
+  "/episode/the-world-cup-a-german-hitchhiker-and-me/": "/episode/lost-in-mexico-city-with-a-dead-phone-on-world-cup-night/",
+  "/episodes/10/": "/episodes/",
+  "/episodes/11/": "/episodes/",
+  "/episodes/12/": "/episodes/",
+  "/episodes/13/": "/episodes/"
+}

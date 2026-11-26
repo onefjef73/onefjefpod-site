@@ -1,7 +1,66 @@
 {
-  "_help": "Optional extras per episode, keyed by the episode's web address ending (its slug). 'parenthetical' shows a word in parentheses above the title. 'youtube' is a YouTube video ID; you only need it if the video isn't attached to the episode in Captivate, because videos added there show up on their own. The entry below is an example and matches no episode.",
+  "_help": "Optional extras per episode, keyed by the episode's web address ending (its slug). 'parenthetical' shows a word in parentheses above the title. 'youtube' is a YouTube video ID; you only need it if the video isn't attached to the episode in Captivate, because videos added there show up on their own. The entry below is an example and matches no episode. 'seoTitle' and 'seoDescription' replace the page title and description that search engines and link previews show (the page itself still shows the real episode title). The ones here were recovered from the old Captivate site's Episode Page SEO fields via the Internet Archive.",
   "example-episode-slug": {
     "parenthetical": "(EJEMPLO)",
     "youtube": ""
+  },
+  "black-sheep-candelaria-divide-and-conquer-with-bernardo-pacheco": {
+    "seoTitle": "Black Sheep, Candelaria and Divide and Conquer with Bernardo Pacheco",
+    "seoDescription": "A Mexico City native on growing up poor, colonized religion, and why the systems keeping us divided are working exactly as designed."
+  },
+  "mexican-milk-cartons-other-small-confusions": {
+    "seoTitle": "Still in Mexico City, Hitting a Wall & Figuring It Out in Real Time",
+    "seoDescription": "I didn’t feel like recording, so I did—raw thoughts on feeling stuck, language learning, and trying to get unstuck."
+  },
+  "butter-but-no-spatula": {
+    "seoTitle": "Moving to Mexico City: The First Week",
+    "seoDescription": "First week living in Mexico City as an expat — thunderstorms, garbage bells, knife sharpeners on bikes, expat poker, and deleting the news."
+  },
+  "colonists-duolingos-dirty-secret-and-a-million-pesos-with-chris-casey": {
+    "seoTitle": "Abu Dhabi Expat Life, Learning Arabic and Living Abroad with Chris Casey",
+    "seoDescription": "Chris Casey lived in Abu Dhabi for a year and a half. We talk about expat life in the Emirates, learning Arabic, and the call to prayer."
+  },
+  "conversations-confessions-cow-testicles": {
+    "seoDescription": "The best moments from season 1 of onefjef: deep conversations, funny stories, travel, music, philosophy, and unexpected moments."
+  },
+  "cracked-wide-open": {
+    "seoTitle": "Moving to Mexico City: One Month In, Starting Over",
+    "seoDescription": "A month into expat life in Mexico City and something shifts. Family visits, mariachi, a cooking class, and finally deciding to stop pretending."
+  },
+  "earthquake-alarms-sinking-sidewalks-in-mexico-city": {
+    "seoTitle": "Mexico City Is Sinking and I Just Moved Here",
+    "seoDescription": "Two months into solo expat life in Mexico City and I'm still figuring out dinner, the language, and what to do when the earthquake sirens go off."
+  },
+  "faith-the-warped-tour-real-life-with-tim-waters": {
+    "seoTitle": "The Warped Tour, Leaving Religion and What Happens When We Die with Tim Waters",
+    "seoDescription": "A punk kid from Alaska who toured on Warped Tour, nearly got signed to MySpace Records, and still can't get through a Duolingo lesson."
+  },
+  "indie-films-hollywood-steering-the-ship-with-jon-sherman": {
+    "seoTitle": "Jon Sherman: Independent Filmmaker, Film Professor, and the Reality of the Film Industry",
+    "seoDescription": "A conversation with filmmaker and Kenyon College film professor Jon Sherman about independent filmmaking, Hollywood, and what it takes to keep going."
+  },
+  "the-simpsons-in-spanish-a-bungee-fitness-class": {
+    "seoTitle": "The Simpsons Is Apparently Better in Spanish",
+    "seoDescription": "Two months into expat life in Mexico City. I talk loneliness, 6 hours/day of Spanish classes, bungee fitness & what it feels like to stop being a tourist"
+  },
+  "light-fixtures": {
+    "seoTitle": "Living in Mexico City: Week Two, Expat Loneliness, and Everything I Didn't Expect",
+    "seoDescription": "Two weeks into expat life in Mexico City and reality is setting in — loneliness, no Spanish, and surprises nobody warns you about."
+  },
+  "mia": {
+    "seoTitle": "Talking to Gen Z: My Teenage Cousin on School, Phones & the Future",
+    "seoDescription": "A real conversation about teen life in 2025 — from wrestling practice to TikTok, band, and finding balance in a world ruled by screens."
+  },
+  "politics-burnout-the-great-unraveling-with-evelyn-quartz": {
+    "seoTitle": "Politics, Burnout & The Great Unraveling – with Evelyn Quartz",
+    "seoDescription": "Ex-political insiders Jef Taylor and Evelyn Quartz talk about burnout, disillusionment, and the collapse of faith in American politics."
+  },
+  "the-sick-anniversary": {
+    "seoTitle": "A Sick & Soggy First Anniversary in Mexico City",
+    "seoDescription": "The onefjef podcast turns one. Recorded sick in Mexico City — a flooded apartment, the wrong Cineteca, learning Spanish, and life as an expat here."
+  },
+  "un-kilogramo-de-tortillas": {
+    "seoTitle": "The Vibes Are Better in Mexico City (But Don't Tell Anyone)",
+    "seoDescription": "No driving test in CDMX, old Beetle taxis, Spanish breakthroughs, rising rent, and the strange reality of actually being an expat in Mexico City."
   }
 }

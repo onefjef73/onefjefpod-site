@@ -137,6 +137,20 @@ for (const [name, target] of Object.entries(cfg.redirects || {})) {
   if (target) await write(`/${name}/`, t.redirect(target), { index: false });
 }
 
+// Old addresses from the Captivate site that now live somewhere else (content/redirects.json).
+// A redirect never replaces a real page.
+try {
+  const moved = JSON.parse(await readFile(path.join(root, 'content/redirects.json'), 'utf8'));
+  let n = 0;
+  for (const [from, to] of Object.entries(moved)) {
+    if (from.startsWith('_') || !to) continue;
+    const file = path.join(dist, from.replace(/^\//, ''), 'index.html');
+    if (existsSync(file)) continue;
+    await write(from, t.redirect(`${cfg.siteUrl}${to}`), { index: false }); n++;
+  }
+  console.log(`  ${n} old addresses forwarded`);
+} catch (e) { if (e.code !== 'ENOENT') throw e; }
+
 pages.sort((a, b) => a.urlPath.localeCompare(b.urlPath));
 await writeFile(path.join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

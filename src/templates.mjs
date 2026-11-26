@@ -496,8 +496,10 @@ ${supportBand()}`;
 ${supportBand()}`;
     const image = ep.image || show.image || abs('/img/og-default.jpg');
     return layout({
-      title: (ep.number != null && ep.title.length + cfg.showName.length < 52) ? `${ep.title} (Ep. ${ep.number}) | ${cfg.showName}` : `${ep.title} | ${cfg.showName}`,
-      description: ep.excerpt || `${ep.title}, an episode of ${cfg.showName}.`,
+      // An SEO title or description set in content/episodes.json replaces the default for
+      // search results and link previews; the page itself always shows the real title.
+      title: extra?.seoTitle ? `${extra.seoTitle} | ${cfg.showName}` : (ep.number != null && ep.title.length + cfg.showName.length < 52) ? `${ep.title} (Ep. ${ep.number}) | ${cfg.showName}` : `${ep.title} | ${cfg.showName}`,
+      description: extra?.seoDescription || ep.excerpt || `${ep.title}, an episode of ${cfg.showName}.`,
       path,
       body,
       image,
