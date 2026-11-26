@@ -43,6 +43,8 @@ jobs:
         run: npm run build
         env:
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          CAPTIVATE_USER_ID: ${{ secrets.CAPTIVATE_USER_ID }}
+          CAPTIVATE_API_KEY: ${{ secrets.CAPTIVATE_API_KEY }}
       # Records the newest episode in the repository. Besides being a handy
       # log, this regular commit keeps GitHub from switching off the hourly
       # schedule, which it does to public repositories left untouched for 60 days.

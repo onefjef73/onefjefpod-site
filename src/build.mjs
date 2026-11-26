@@ -8,6 +8,7 @@ import { loadFeed, cleanHtml, plainText } from './feed.mjs';
 import { getTranscript } from './transcript.mjs';
 import { makeTemplates } from './templates.mjs';
 import { makeThumb } from './thumbs.mjs';
+import { fetchCaptivateSeo } from './captivate.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
@@ -47,6 +48,11 @@ if (!episodes.length) throw new Error('The feed has no episodes. Nothing was pub
 console.log(`  ${episodes.length} episodes, newest: "${episodes[0].title}"`);
 
 const extras = JSON.parse(await readFile(path.join(root, 'content/episodes.json'), 'utf8'));
+// SEO titles and descriptions written in Captivate win over the saved copies in episodes.json.
+{
+  const seo = await fetchCaptivateSeo(cfg.feedUrl);
+  for (const [slug, v] of Object.entries(seo)) extras[slug] = { ...(extras[slug] || {}), ...v };
+}
 const aboutSrc = await readFile(path.join(root, 'content/about.md'), 'utf8');
 const todos = aboutSrc.split('\n').filter((l) => l.trim().startsWith('TODO:'));
 if (todos.length) console.warn(`  note: content/about.md still has ${todos.length} TODO line(s); they are left off the site.`);
