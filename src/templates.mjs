@@ -118,7 +118,7 @@ export function makeTemplates(cfg, base, show) {
 <meta name="description" content="${esc(description)}">
 ${noindex || cfg.noindex ? '<meta name="robots" content="noindex">' : '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">'}
 <link rel="canonical" href="${esc(canonical)}">
-<meta property="og:site_name" content="${esc(cfg.showName)}">
+${path === '/' && cfg.bingVerification ? `<meta name="msvalidate.01" content="${esc(cfg.bingVerification)}">\n` : ''}<meta property="og:site_name" content="${esc(cfg.showName)}">
 <meta property="og:type" content="${type}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
